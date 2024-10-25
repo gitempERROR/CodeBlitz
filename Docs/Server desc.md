@@ -87,6 +87,63 @@
 
 ### Триггеры
 
-- [**check_task_count_trigger**]: Запрещает добавление заданий на день, если для этого дня уже есть 2 задания
+- [**check_task_count_trigger**]: Запрещает добавление задание на день, если для этого дня уже есть 2 задания
+
+###### Код триггера
+
+```sql
+-- Триггер для проверки количества задач на день
+CREATE OR REPLACE FUNCTION check_task_count() RETURNS TRIGGER AS $$
+BEGIN
+  IF (SELECT COUNT(*) FROM tasks WHERE day_id = NEW.day_id) >= 2 THEN
+    RAISE EXCEPTION 'Нельзя добавить больше двух задач на этот день.';
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_task_count_trigger
+BEFORE INSERT ON tasks
+FOR EACH ROW
+EXECUTE PROCEDURE check_task_count();
+```
+
 - [**increment_task_count_trigger**]: Увеличивает счетчик заданий на день после добавлении задания
+
+###### Код триггера
+
+```sql
+-- Триггер для увеличения количества задач на день
+CREATE OR REPLACE FUNCTION increment_task_count() RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE days SET task_count = task_count + 1 WHERE id = NEW.day_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER increment_task_count_trigger
+AFTER INSERT ON tasks
+FOR EACH ROW
+EXECUTE PROCEDURE increment_task_count();
+```
+
 - [**set_day_task_id_trigger**]: Устанавливает day_task_id задачи в рамках дня (1 или 2)
+
+```sql
+-- Триггер для установки day_task_id
+CREATE OR REPLACE FUNCTION set_day_task_id() RETURNS TRIGGER AS $$
+BEGIN
+  IF (SELECT COUNT(*) FROM tasks WHERE day_id = NEW.day_id) = 0 THEN
+    NEW.day_task_id := 1;
+  ELSE
+    NEW.day_task_id := 2;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_day_task_id_trigger
+BEFORE INSERT ON tasks
+FOR EACH ROW
+EXECUTE PROCEDURE set_day_task_id();
+```

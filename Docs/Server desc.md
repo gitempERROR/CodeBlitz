@@ -129,6 +129,8 @@ EXECUTE PROCEDURE increment_task_count();
 
 - [**set_day_task_id_trigger**]: Устанавливает day_task_id задачи в рамках дня (1 или 2)
 
+###### Код триггера
+
 ```sql
 -- Триггер для установки day_task_id
 CREATE OR REPLACE FUNCTION set_day_task_id() RETURNS TRIGGER AS $$

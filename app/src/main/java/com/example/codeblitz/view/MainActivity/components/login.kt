@@ -10,15 +10,21 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.example.codeblitz.R
+import com.example.codeblitz.view.ui.theme.ButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentButtonCodeBlitz
@@ -27,32 +33,32 @@ import com.example.codeblitz.view.ui.theme.TransparentButtonCodeBlitz
 @Composable
 fun login() {
     Box(
-        modifier = Modifier.fillMaxHeight()
+        modifier = Modifier.fillMaxSize().background(color = CodeBlitzTheme.colors.background)
     )
     {
         Column(
-            modifier = Modifier.background(color = CodeBlitzTheme.colors.background).fillMaxSize()
+            modifier = Modifier.fillMaxSize().zIndex(3f)
         ) {
             Row(
-                modifier = Modifier.background(color = CodeBlitzTheme.colors.background).fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             ) {
                 Box(
-                    modifier = Modifier.width(35.dp).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
+                    modifier = Modifier.weight(3.3f).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
                 )
                 Spacer(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1.2f)
                 )
                 Box(
-                    modifier = Modifier.width(35.dp).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
+                    modifier = Modifier.weight(3.3f).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
                 )
                 Spacer(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1.2f)
                 )
                 Box(
-                    modifier = Modifier.width(35.dp).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
+                    modifier = Modifier.weight(3.3f).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
                 )
                 Column(
-                    modifier = Modifier.fillMaxSize().weight(25f)
+                    modifier = Modifier.fillMaxSize().weight(27f)
                 ) {
                     Box(
                         modifier = Modifier.height(50.dp).fillMaxWidth()
@@ -67,10 +73,10 @@ fun login() {
                             imageVector = ImageVector.vectorResource(R.drawable.vector_logo_codebliz),
                             contentDescription = "",
                             modifier = Modifier
-                                .fillMaxWidth().height(150.dp)
+                                .fillMaxWidth().weight(0.15f)
                         )
                         Spacer(
-                            modifier = Modifier.weight(0.12f)
+                            modifier = Modifier.weight(0.1f)
                         )
                         Column(
                             modifier = Modifier.fillMaxSize().weight(0.6f)
@@ -97,19 +103,109 @@ fun login() {
                             )
                             TransparentButtonCodeBlitz(
                                 text = "Зарегистрироваться",
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 5.dp)
+                            )
+                            Spacer(
+                                modifier = Modifier.height(12.dp)
+                            )
+                            if (true) {
+                                Box(
+                                    modifier = Modifier
+                                        .height(57.dp)
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp)
+                                        .background(
+                                            color = CodeBlitzTheme.colors.background,
+                                            shape = RoundedCornerShape(10.dp)
+                                        ),
+                                ){
+                                    Text(
+                                        "Некорректные данные для входа!",
+                                        style = CodeBlitzTheme.typography.bodyMedium,
+                                        color = CodeBlitzTheme.colors.tertiary,
+                                        modifier = Modifier.align(Alignment.Center).padding(horizontal = 12.dp),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 2
+                                    )
+                                }
+                            }
+                            Spacer(
+                                modifier = Modifier.height(110.dp)
                             )
                         }
                     }
                 }
             }
         }
-        Column {
+        Column(
+            modifier = Modifier.zIndex(4f)
+        ) {
             Spacer(
                 modifier = Modifier.height(49.dp)
             )
             Box(
-                modifier = Modifier.background(color = CodeBlitzTheme.colors.tertiary).fillMaxWidth().height(10.dp)
+                modifier = Modifier
+                    .background(color = CodeBlitzTheme.colors.tertiary)
+                    .fillMaxWidth()
+                    .height(10.dp)
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .background(
+                    color = CodeBlitzTheme.colors.primary,
+                    shape = RoundedCornerShape(88.dp)
+                )
+                .height(155.dp)
+                .align(Alignment.BottomCenter)
+                .zIndex(2f)
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .background(
+                    color = CodeBlitzTheme.colors.primary,
+                )
+                .height(88.dp)
+                .align(Alignment.BottomCenter)
+                .zIndex(2f)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 65.dp)
+                .background(
+                    color = CodeBlitzTheme.colors.onBackground,
+                )
+                .height(40.dp)
+                .align(Alignment.BottomCenter)
+                .zIndex(4f)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 65.dp)
+                .background(
+                    color = CodeBlitzTheme.colors.onBackground,
+                    shape = RoundedCornerShape(40.dp)
+                )
+                .height(110.dp)
+                .align(Alignment.BottomCenter)
+                .zIndex(4f)
+        ){
+            ButtonCodeBlitz(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp)
+                    .height(65.dp)
+                    .align(Alignment.Center)
+                    .zIndex(4f)
+                    .offset(y = 10.dp),
+                text = "Вход"
             )
         }
     }

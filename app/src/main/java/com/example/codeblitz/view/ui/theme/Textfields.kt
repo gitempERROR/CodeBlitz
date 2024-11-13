@@ -13,6 +13,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
@@ -20,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.codeblitz.domain.utils.ScreenDimensions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
@@ -54,9 +56,9 @@ fun TextFieldCodeBlitz(
             textStyle = TextStyle(
                 fontFamily = JetBrains,
                 fontWeight = FontWeight.Normal,
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-                letterSpacing = 0.5.sp,
+                fontSize = (14 * ScreenDimensions.getScreenRatio()).sp,
+                lineHeight = (20 * ScreenDimensions.getScreenRatio()).sp,
+                letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp,
                 color = CodeBlitzTheme.colors.primary
             ),
         ) { innerTextField ->
@@ -74,9 +76,11 @@ fun TextFieldCodeBlitz(
                     focusedTextColor = CodeBlitzTheme.colors.primary,
                     unfocusedTextColor = CodeBlitzTheme.colors.primary,
                     focusedPlaceholderColor = CodeBlitzTheme.colors.primary,
-                    unfocusedPlaceholderColor = CodeBlitzTheme.colors.primary
+                    unfocusedPlaceholderColor = CodeBlitzTheme.colors.primary,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
                 ),
-                shape = RoundedCornerShape(15.dp)
+                shape = RoundedCornerShape(10.dp)
             )
         }
     }

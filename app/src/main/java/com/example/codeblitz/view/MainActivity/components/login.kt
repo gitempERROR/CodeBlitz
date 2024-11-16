@@ -1,5 +1,6 @@
 package com.example.codeblitz.view.MainActivity.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,12 +13,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +38,10 @@ import com.example.codeblitz.view.ui.theme.TransparentButtonCodeBlitz
 @Preview
 @Composable
 fun login() {
+    val configuration = LocalConfiguration.current
+    val vertical = remember {
+        derivedStateOf { configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
+    }
     Box(
         modifier = Modifier.fillMaxSize().background(color = CodeBlitzTheme.colors.background)
     )
@@ -43,43 +53,55 @@ fun login() {
                 modifier = Modifier.fillMaxSize()
             ) {
                 Box(
-                    modifier = Modifier.weight(3.3f).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
+                    modifier = Modifier.weight(3.3f / (if (vertical.value) 1 else (3/2))).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
                 )
                 Spacer(
-                    modifier = Modifier.weight(1.2f)
+                    modifier = Modifier.weight(1.2f / (if (vertical.value) 1 else (3/2)))
                 )
                 Box(
-                    modifier = Modifier.weight(3.3f).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
+                    modifier = Modifier.weight(3.3f / (if (vertical.value) 1 else (3/2))).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
                 )
                 Spacer(
-                    modifier = Modifier.weight(1.2f)
+                    modifier = Modifier.weight(1.2f / (if (vertical.value) 1 else (3/2)))
                 )
                 Box(
-                    modifier = Modifier.weight(3.3f).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
+                    modifier = Modifier.weight(3.3f / (if (vertical.value) 1 else (3/2))).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
                 )
                 Column(
                     modifier = Modifier.fillMaxSize().weight(27f)
                 ) {
-                    Box(
-                        modifier = Modifier.height(50.dp).fillMaxWidth()
-                    )
+                    if (vertical.value) {
+                        Spacer(
+                            modifier = Modifier.height(50.dp).fillMaxWidth()
+                        )
+                    }
                     Column(
                         modifier = Modifier.fillMaxSize().background(color = CodeBlitzTheme.colors.onBackground)
                     ) {
-                        Spacer(
-                            modifier = Modifier.weight(0.03f)
-                        )
-                        Image(
-                            imageVector = ImageVector.vectorResource(R.drawable.vector_logo_codebliz),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .fillMaxWidth().weight(0.15f)
-                        )
-                        Spacer(
-                            modifier = Modifier.weight(0.1f)
-                        )
+                        if (vertical.value) {
+                            Spacer(
+                                modifier = Modifier.weight(0.03f)
+                            )
+                            Image(
+                                imageVector = ImageVector.vectorResource(R.drawable.vector_logo_codebliz),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxWidth().weight(0.15f)
+                            )
+                            Spacer(
+                                modifier = Modifier.weight(0.1f)
+                            )
+                        }
+                        else {
+                            Spacer(
+                                modifier = Modifier.height(30.dp)
+                            )
+                        }
                         Column(
-                            modifier = Modifier.fillMaxSize().weight(0.6f)
+                            modifier = if (vertical.value) Modifier.fillMaxSize().weight(0.6f)
+                            else Modifier.fillMaxSize().weight(0.6f).verticalScroll(
+                                rememberScrollState()
+                            )
                         ) {
                             TextFieldCodeBlitz(
                                 modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
@@ -96,7 +118,8 @@ fun login() {
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
                                 text = "Пароль",
-                                padding = 12.dp
+                                padding = 12.dp,
+                                isPassword = true
                             )
                             Spacer(
                                 modifier = Modifier.height(20.dp)
@@ -137,18 +160,20 @@ fun login() {
                 }
             }
         }
-        Column(
-            modifier = Modifier.zIndex(4f)
-        ) {
-            Spacer(
-                modifier = Modifier.height(49.dp)
-            )
-            Box(
-                modifier = Modifier
-                    .background(color = CodeBlitzTheme.colors.tertiary)
-                    .fillMaxWidth()
-                    .height(10.dp)
-            )
+        if (vertical.value) {
+            Column(
+                modifier = Modifier.zIndex(4f)
+            ) {
+                Spacer(
+                    modifier = Modifier.height(49.dp)
+                )
+                Box(
+                    modifier = Modifier
+                        .background(color = CodeBlitzTheme.colors.tertiary)
+                        .fillMaxWidth()
+                        .height(10.dp)
+                )
+            }
         }
         Box(
             modifier = Modifier

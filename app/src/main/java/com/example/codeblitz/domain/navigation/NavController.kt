@@ -11,7 +11,7 @@ import com.example.codeblitz.view.MainActivity.components.register
 fun NavController(controller: NavHostController) {
     NavHost(
         navController = controller,
-        startDestination = Routes.Login.route
+        startDestination = Routes.Register.route
     ) {
         composable(Routes.Login.route) {
             login()

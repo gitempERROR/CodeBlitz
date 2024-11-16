@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.codeblitz.domain.navigation.NavController
 import com.example.codeblitz.domain.utils.ScreenDimensions
+import com.example.codeblitz.view.MainActivity.components.BottomBar
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 
 class MainActivity : ComponentActivity() {
@@ -26,7 +27,10 @@ class MainActivity : ComponentActivity() {
             val displayMetrics = resources.displayMetrics
             ScreenDimensions.init(displayMetrics)
             CodeBlitzTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = { BottomBar() }
+                ) { innerPadding ->
                     Box(
                         modifier = Modifier.padding(innerPadding)
                     ) {

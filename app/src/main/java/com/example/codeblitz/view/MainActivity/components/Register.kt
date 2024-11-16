@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -32,12 +33,12 @@ import androidx.compose.ui.zIndex
 import com.example.codeblitz.R
 import com.example.codeblitz.view.ui.theme.ButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
+import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
-import com.example.codeblitz.view.ui.theme.TransparentButtonCodeBlitz
 
 @Preview
 @Composable
-fun login() {
+fun register() {
     val configuration = LocalConfiguration.current
     val vertical = remember {
         derivedStateOf { configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
@@ -122,19 +123,22 @@ fun login() {
                                 isPassword = true
                             )
                             Spacer(
-                                modifier = Modifier.height(20.dp)
+                                modifier = Modifier.height(40.dp)
                             )
-                            TransparentButtonCodeBlitz(
-                                text = "Зарегистрироваться",
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 5.dp)
+                            TextFieldCodeBlitz(
+                                modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
+                                internalModifier = Modifier.fillMaxWidth(),
+                                labelGap = 1.dp,
+                                text = "Повторите пароль",
+                                padding = 12.dp,
+                                isPassword = true
                             )
                             Spacer(
-                                modifier = Modifier.height(12.dp)
+                                modifier = Modifier.height(20.dp)
                             )
                             if (true) {
                                 Box(
                                     modifier = Modifier
-                                        .height(57.dp)
                                         .fillMaxWidth()
                                         .padding(horizontal = 12.dp)
                                         .background(
@@ -143,10 +147,10 @@ fun login() {
                                         ),
                                 ){
                                     Text(
-                                        "Некорректные данные для входа!",
+                                        "Логин занят!",
                                         style = CodeBlitzTheme.typography.bodyMedium,
                                         color = CodeBlitzTheme.colors.tertiary,
-                                        modifier = Modifier.align(Alignment.Center).padding(horizontal = 12.dp),
+                                        modifier = Modifier.align(Alignment.Center).padding(horizontal = 12.dp, vertical = 12.dp),
                                         textAlign = TextAlign.Center,
                                         maxLines = 2
                                     )
@@ -202,12 +206,23 @@ fun login() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 65.dp)
+                .padding(start = 65.dp)
                 .background(
                     color = CodeBlitzTheme.colors.onBackground,
                 )
                 .height(40.dp)
                 .align(Alignment.BottomCenter)
+                .zIndex(4f)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 105.dp)
+                .background(
+                    color = CodeBlitzTheme.colors.onBackground,
+                )
+                .height(110.dp)
+                .align(Alignment.BottomEnd)
                 .zIndex(4f)
         )
         Box(
@@ -230,8 +245,15 @@ fun login() {
                     .align(Alignment.Center)
                     .zIndex(4f)
                     .offset(y = 10.dp),
-                text = "Вход"
+                text = "Регистрация"
             )
         }
+        IconButtonCodeBlitz(
+            modifier = Modifier
+                .size(65.dp)
+                .offset(x = -(12.5.dp), y = -(12.5.dp))
+                .align(Alignment.BottomEnd)
+                .zIndex(4f)
+        )
     }
 }

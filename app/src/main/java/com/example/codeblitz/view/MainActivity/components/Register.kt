@@ -38,7 +38,7 @@ import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
 
 @Preview
 @Composable
-fun register() {
+fun Register() {
     val configuration = LocalConfiguration.current
     val vertical = remember {
         derivedStateOf { configuration.orientation == Configuration.ORIENTATION_PORTRAIT }

@@ -10,5 +10,6 @@ val Intro = FontFamily(
 )
 
 val JetBrains = FontFamily(
-    Font(R.font.jet_brains_mono_regular, FontWeight.Normal)
+    Font(R.font.jet_brains_mono_regular, FontWeight.Normal),
+    Font(R.font.jet_brains_mono_bold, FontWeight.Bold)
 )

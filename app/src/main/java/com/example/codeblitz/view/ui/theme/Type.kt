@@ -31,4 +31,11 @@ val Typography: Typography
             lineHeight = (20 * ScreenDimensions.getScreenRatio()).sp,
             letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp
         ),
+        bodyLarge = TextStyle(
+            fontFamily = JetBrains,
+            fontWeight = FontWeight.Bold,
+            fontSize = (25 * ScreenDimensions.getScreenRatio()).sp,
+            lineHeight = (28 * ScreenDimensions.getScreenRatio()).sp,
+            letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp
+        )
     )

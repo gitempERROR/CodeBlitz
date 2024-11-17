@@ -1,7 +1,10 @@
 package com.example.codeblitz.view.ui.theme
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -95,21 +98,23 @@ fun TransparentIconButtonCodeBlitz(
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     modifierIcon: Modifier = Modifier,
-    iconId: Int = R.drawable.pointer_back
+    iconId: Int = R.drawable.pointer_back,
+    tint: Color = CodeBlitzTheme.colors.secondary
 ) {
     Button(
         modifier = modifier,
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent
-        )
+        ),
+        contentPadding = PaddingValues(5.dp)
     )
     {
         Icon(
             imageVector = ImageVector.vectorResource(iconId),
             contentDescription = "",
-            tint = CodeBlitzTheme.colors.secondary,
-            modifier = modifierIcon.fillMaxSize().align(Alignment.CenterVertically).padding(0.dp)
+            tint = tint,
+            modifier = modifierIcon
         )
     }
 }

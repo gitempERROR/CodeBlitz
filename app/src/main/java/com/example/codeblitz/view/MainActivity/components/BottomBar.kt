@@ -37,7 +37,7 @@ fun BottomBar(){
                 .size(75.dp)
                 .scale(1.3f)
                 .shadow(
-                    5.dp,
+                    2.dp,
                     shape = RoundedCornerShape(50)
                 )
                 .border(
@@ -52,7 +52,7 @@ fun BottomBar(){
                 .align(Alignment.BottomCenter)
                 .zIndex(4f),
             iconId = R.drawable.home,
-            modifierIcon = Modifier.scale(1.3f)
+            modifierIcon = Modifier.padding(13.dp)
         )
         Column(
             modifier = Modifier.align(Alignment.BottomCenter)

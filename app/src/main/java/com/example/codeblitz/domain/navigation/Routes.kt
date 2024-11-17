@@ -1,7 +1,7 @@
 package com.example.codeblitz.domain.navigation
 
 sealed class Routes(val route: String) {
-    data object Home        : Routes("Home")
+    data object Main        : Routes("Home")
 
     data object Login       : Routes("Login")
 

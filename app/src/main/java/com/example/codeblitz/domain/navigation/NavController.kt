@@ -4,20 +4,24 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.example.codeblitz.view.MainActivity.components.login
-import com.example.codeblitz.view.MainActivity.components.register
+import com.example.codeblitz.view.MainActivity.components.Main
+import com.example.codeblitz.view.MainActivity.components.Login
+import com.example.codeblitz.view.MainActivity.components.Register
 
 @Composable
 fun NavController(controller: NavHostController) {
     NavHost(
         navController = controller,
-        startDestination = Routes.Register.route
+        startDestination = Routes.Main.route
     ) {
         composable(Routes.Login.route) {
-            login()
+            Login()
         }
-        composable(Routes.Register.route){
-            register()
+        composable(Routes.Register.route) {
+            Register()
+        }
+        composable(Routes.Main.route) {
+            Main()
         }
     }
 }

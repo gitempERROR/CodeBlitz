@@ -19,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -41,17 +42,20 @@ fun TextFieldCodeBlitz(
     labelGap: Dp = 5.dp,
     internalModifier: Modifier = Modifier,
     text: String = "TextField_label",
-    padding: Dp = 10.dp,
+    paddingValues: PaddingValues = PaddingValues(10.dp),
     onValueChange: (String) -> Unit = {},
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    isSettings: Boolean = false,
+    style: TextStyle = CodeBlitzTheme.typography.titleSmall,
 ) {
     Column(
         modifier = modifier
     ) {
         var shown by remember { mutableStateOf(if (isPassword) isPassword else null) }
+        var isFocused by remember { mutableStateOf(false)}
         Text(
             text = text,
-            style = CodeBlitzTheme.typography.titleSmall,
+            style = style,
             color = CodeBlitzTheme.colors.tertiary
         )
         Spacer(
@@ -61,17 +65,17 @@ fun TextFieldCodeBlitz(
         BasicTextField(
             value = "Empty",
             onValueChange = onValueChange,
-            modifier = internalModifier,
+            modifier = internalModifier.onFocusChanged { isFocused = it.isFocused },
             interactionSource = interactionSource,
             enabled = true,
             singleLine = true,
             textStyle = TextStyle(
                 fontFamily = JetBrains,
                 fontWeight = FontWeight.Normal,
-                fontSize = (14 * ScreenDimensions.getScreenRatio()).sp,
+                fontSize = (15 * ScreenDimensions.getScreenRatio()).sp,
                 lineHeight = (20 * ScreenDimensions.getScreenRatio()).sp,
                 letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp,
-                color = CodeBlitzTheme.colors.primary
+                color = if (!isFocused and isSettings) CodeBlitzTheme.colors.tertiary else CodeBlitzTheme.colors.primary
             ),
             visualTransformation = if (shown != null) (if (!shown!!) PasswordVisualTransformation() else VisualTransformation.None) else VisualTransformation.None
         ) { innerTextField ->
@@ -81,15 +85,15 @@ fun TextFieldCodeBlitz(
                 singleLine = true,
                 enabled = true,
                 interactionSource = interactionSource,
-                contentPadding = PaddingValues(padding), // this is how you can remove the padding
+                contentPadding = paddingValues, // this is how you can remove the padding
                 visualTransformation = VisualTransformation.None,
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = CodeBlitzTheme.colors.secondaryContainer,
-                    unfocusedContainerColor = CodeBlitzTheme.colors.secondaryContainer,
+                    unfocusedContainerColor = if (isSettings) CodeBlitzTheme.colors.background else CodeBlitzTheme.colors.secondaryContainer,
                     focusedTextColor = CodeBlitzTheme.colors.primary,
-                    unfocusedTextColor = CodeBlitzTheme.colors.primary,
+                    unfocusedTextColor = if (isSettings) CodeBlitzTheme.colors.tertiary else CodeBlitzTheme.colors.primary,
                     focusedPlaceholderColor = CodeBlitzTheme.colors.primary,
-                    unfocusedPlaceholderColor = CodeBlitzTheme.colors.primary,
+                    unfocusedPlaceholderColor = if (isSettings) CodeBlitzTheme.colors.tertiary else CodeBlitzTheme.colors.primary,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
@@ -103,7 +107,17 @@ fun TextFieldCodeBlitz(
                             contentDescription = "",
                             tint = CodeBlitzTheme.colors.primary
                         )
-                    } else { }
+                    } else {
+                        if(isSettings) {
+                            Icon(
+                                imageVector = if (isFocused) ImageVector.vectorResource(R.drawable.check)
+                                else ImageVector.vectorResource((R.drawable.pen)),
+                                modifier = if (isFocused) Modifier.clickable {} else Modifier,
+                                contentDescription = "",
+                                tint = if (isFocused) CodeBlitzTheme.colors.primary else CodeBlitzTheme.colors.secondary
+                            )
+                        }
+                    }
                 },
             )
         }

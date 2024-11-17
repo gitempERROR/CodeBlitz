@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -72,14 +73,15 @@ fun ButtonCodeBlitz(
 fun IconButtonCodeBlitz(
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
-    iconId: Int = R.drawable.pointer_back
+    iconId: Int = R.drawable.pointer_back,
+    colors: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = CodeBlitzTheme.colors.background
+    )
 ) {
     Button(
         modifier = modifier,
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = CodeBlitzTheme.colors.background
-        ),
+        colors = colors,
         shape = RoundedCornerShape(15.dp)
     )
     {

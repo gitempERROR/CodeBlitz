@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -109,7 +110,7 @@ fun Register() {
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
                                 text = "Логин",
-                                padding = 12.dp
+                                paddingValues = PaddingValues(12.dp)
                             )
                             Spacer(
                                 modifier = Modifier.height(40.dp)
@@ -119,7 +120,7 @@ fun Register() {
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
                                 text = "Пароль",
-                                padding = 12.dp,
+                                paddingValues = PaddingValues(12.dp),
                                 isPassword = true
                             )
                             Spacer(
@@ -130,7 +131,7 @@ fun Register() {
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
                                 text = "Повторите пароль",
-                                padding = 12.dp,
+                                paddingValues = PaddingValues(12.dp),
                                 isPassword = true
                             )
                             Spacer(

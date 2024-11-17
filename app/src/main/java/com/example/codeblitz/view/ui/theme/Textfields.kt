@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -65,17 +67,31 @@ fun TextFieldCodeBlitz(
         BasicTextField(
             value = "Empty",
             onValueChange = onValueChange,
-            modifier = internalModifier.onFocusChanged { isFocused = it.isFocused },
+            modifier = internalModifier
+                .onFocusChanged { isFocused = it.isFocused }
+                .padding(top = 3.dp)
+                .shadow(
+                    2.dp,
+                    shape = RoundedCornerShape(15.dp)
+                )
+                .padding(bottom = 3.dp),
             interactionSource = interactionSource,
             enabled = true,
             singleLine = true,
-            textStyle = TextStyle(
+            textStyle = if (isSettings) TextStyle(
                 fontFamily = JetBrains,
                 fontWeight = FontWeight.Normal,
                 fontSize = (15 * ScreenDimensions.getScreenRatio()).sp,
                 lineHeight = (20 * ScreenDimensions.getScreenRatio()).sp,
                 letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp,
-                color = if (!isFocused and isSettings) CodeBlitzTheme.colors.tertiary else CodeBlitzTheme.colors.primary
+                color = CodeBlitzTheme.colors.primary
+            ) else TextStyle(
+                fontFamily = JetBrains,
+                fontWeight = FontWeight.Normal,
+                fontSize = (21 * ScreenDimensions.getScreenRatio()).sp,
+                lineHeight = (26 * ScreenDimensions.getScreenRatio()).sp,
+                letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp,
+                color = if (!isFocused) CodeBlitzTheme.colors.tertiary else CodeBlitzTheme.colors.primary
             ),
             visualTransformation = if (shown != null) (if (!shown!!) PasswordVisualTransformation() else VisualTransformation.None) else VisualTransformation.None
         ) { innerTextField ->

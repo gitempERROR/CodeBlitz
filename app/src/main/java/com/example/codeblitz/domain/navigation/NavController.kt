@@ -8,12 +8,13 @@ import com.example.codeblitz.view.MainActivity.components.Main
 import com.example.codeblitz.view.MainActivity.components.Login
 import com.example.codeblitz.view.MainActivity.components.Profile
 import com.example.codeblitz.view.MainActivity.components.Register
+import com.example.codeblitz.view.MainActivity.components.TaskDesc
 
 @Composable
 fun NavController(controller: NavHostController) {
     NavHost(
         navController = controller,
-        startDestination = Routes.Profile.route
+        startDestination = Routes.TaskDesc.route
     ) {
         composable(Routes.Login.route) {
             Login()
@@ -26,6 +27,9 @@ fun NavController(controller: NavHostController) {
         }
         composable(Routes.Profile.route) {
             Profile()
+        }
+        composable(Routes.TaskDesc.route) {
+            TaskDesc()
         }
     }
 }

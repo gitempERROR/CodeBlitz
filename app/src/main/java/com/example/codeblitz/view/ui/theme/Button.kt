@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -30,7 +31,13 @@ fun TransparentButtonCodeBlitz(
     modifier: Modifier = Modifier
 ) {
     Button(
-        modifier = modifier,
+        modifier = modifier
+            .padding(top = 3.dp)
+            .shadow(
+                2.dp,
+                shape = RoundedCornerShape(15.dp)
+            )
+            .padding(bottom = 3.dp),
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent
@@ -49,14 +56,22 @@ fun TransparentButtonCodeBlitz(
 fun ButtonCodeBlitz(
     text: String = "Button",
     onClick: () -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier,
+    colors: ButtonColors = ButtonDefaults.buttonColors(
+        containerColor = CodeBlitzTheme.colors.background
+    )
 ) {
     Button(
-        modifier = modifier,
+        modifier = modifier
+            .padding(top = 3.dp)
+            .shadow(
+                2.dp,
+                shape = RoundedCornerShape(15.dp)
+            )
+            .padding(bottom = 3.dp),
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = CodeBlitzTheme.colors.background
-        ),
+        colors = colors,
         shape = RoundedCornerShape(15.dp)
     )
     {
@@ -64,7 +79,8 @@ fun ButtonCodeBlitz(
             text = text,
             style = CodeBlitzTheme.typography.titleMedium,
             color = CodeBlitzTheme.colors.secondary,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            modifier = textModifier
         )
     }
 }
@@ -76,10 +92,17 @@ fun IconButtonCodeBlitz(
     iconId: Int = R.drawable.pointer_back,
     colors: ButtonColors = ButtonDefaults.buttonColors(
         containerColor = CodeBlitzTheme.colors.background
-    )
+    ),
+    tint: Color = CodeBlitzTheme.colors.secondary
 ) {
     Button(
-        modifier = modifier,
+        modifier = modifier
+            .padding(top = 3.dp)
+            .shadow(
+                2.dp,
+                shape = RoundedCornerShape(15.dp)
+            )
+            .padding(bottom = 3.dp),
         onClick = onClick,
         colors = colors,
         shape = RoundedCornerShape(15.dp)
@@ -88,7 +111,7 @@ fun IconButtonCodeBlitz(
         Icon(
             imageVector = ImageVector.vectorResource(iconId),
             contentDescription = "",
-            tint = CodeBlitzTheme.colors.secondary,
+            tint = tint,
             modifier = Modifier.fillMaxSize().align(Alignment.CenterVertically).padding(0.dp)
         )
     }

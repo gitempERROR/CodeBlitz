@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.codeblitz.R
+import com.example.codeblitz.view.ui.theme.ButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
@@ -58,7 +59,7 @@ fun Profile() {
                     .align(Alignment.CenterStart),
                 iconId = R.drawable.user,
                 modifierIcon = Modifier.padding(5.dp),
-                tint = CodeBlitzTheme.colors.primary
+                tint = CodeBlitzTheme.colors.secondary
             )
             Text(
                 text = "Профиль",
@@ -70,17 +71,13 @@ fun Profile() {
             )
             IconButtonCodeBlitz(
                 modifier = Modifier
-                    .padding(end = 25.dp, top = 3.dp)
-                    .shadow(
-                        2.dp,
-                        shape = RoundedCornerShape(15.dp)
-                    )
-                    .padding(bottom = 3.dp)
+                    .padding(end = 25.dp)
                     .size(60.dp)
                     .align(Alignment.CenterEnd),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = CodeBlitzTheme.colors.onBackground
-                )
+                ),
+                tint = CodeBlitzTheme.colors.primary
             )
         }
         Spacer(
@@ -135,7 +132,15 @@ fun Profile() {
             isSettings = true
         )
         Spacer(
-            modifier = Modifier.height(20.dp)
+            modifier = Modifier.weight(1f)
+        )
+        ButtonCodeBlitz(
+            text = "Выйти",
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(start = 35.dp, end = 35.dp, bottom = 50.dp)
+                .height(65.dp)
+                .fillMaxWidth()
         )
     }
 }

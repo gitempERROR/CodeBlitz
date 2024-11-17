@@ -75,7 +75,7 @@ fun Main() {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 25.dp)
         ) {
             items(2) {
                 TaskElement()

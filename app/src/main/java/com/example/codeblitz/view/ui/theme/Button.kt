@@ -89,6 +89,7 @@ fun ButtonCodeBlitz(
 fun IconButtonCodeBlitz(
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
+    modifierIcon: Modifier = Modifier,
     iconId: Int = R.drawable.pointer_back,
     colors: ButtonColors = ButtonDefaults.buttonColors(
         containerColor = CodeBlitzTheme.colors.background
@@ -112,7 +113,7 @@ fun IconButtonCodeBlitz(
             imageVector = ImageVector.vectorResource(iconId),
             contentDescription = "",
             tint = tint,
-            modifier = Modifier.fillMaxSize().align(Alignment.CenterVertically).padding(0.dp)
+            modifier = modifierIcon.fillMaxSize().align(Alignment.CenterVertically).padding(0.dp)
         )
     }
 }

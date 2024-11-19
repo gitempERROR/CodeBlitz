@@ -13,6 +13,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -111,7 +112,8 @@ fun TextFieldCodeBlitz(
                     focusedPlaceholderColor = CodeBlitzTheme.colors.primary,
                     unfocusedPlaceholderColor = if (isSettings) CodeBlitzTheme.colors.tertiary else CodeBlitzTheme.colors.primary,
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+                    cursorColor = CodeBlitzTheme.colors.tertiary
                 ),
                 shape = RoundedCornerShape(10.dp),
                 trailingIcon = {

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.example.codeblitz.view.MainActivity.components.Editor
 import com.example.codeblitz.view.MainActivity.components.Main
 import com.example.codeblitz.view.MainActivity.components.Login
 import com.example.codeblitz.view.MainActivity.components.Profile
@@ -14,7 +15,7 @@ import com.example.codeblitz.view.MainActivity.components.TaskDesc
 fun NavController(controller: NavHostController) {
     NavHost(
         navController = controller,
-        startDestination = Routes.TaskDesc.route
+        startDestination = Routes.Editor.route
     ) {
         composable(Routes.Login.route) {
             Login()
@@ -30,6 +31,9 @@ fun NavController(controller: NavHostController) {
         }
         composable(Routes.TaskDesc.route) {
             TaskDesc()
+        }
+        composable(Routes.Editor.route) {
+            Editor()
         }
     }
 }

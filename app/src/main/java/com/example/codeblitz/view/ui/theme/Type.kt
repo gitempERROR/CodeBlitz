@@ -28,7 +28,7 @@ val Typography: Typography
             fontFamily = JetBrains,
             fontWeight = FontWeight.Normal,
             fontSize = (15 * ScreenDimensions.getScreenRatio()).sp,
-            lineHeight = (18 * ScreenDimensions.getScreenRatio()).sp,
+            lineHeight = (22 * ScreenDimensions.getScreenRatio()).sp,
             letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp
         ),
         bodyLarge = TextStyle(
@@ -36,6 +36,13 @@ val Typography: Typography
             fontWeight = FontWeight.Bold,
             fontSize = (25 * ScreenDimensions.getScreenRatio()).sp,
             lineHeight = (28 * ScreenDimensions.getScreenRatio()).sp,
+            letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp
+        ),
+        displaySmall = TextStyle(
+            fontFamily = JetBrains,
+            fontWeight = FontWeight.Bold,
+            fontSize = (20 * ScreenDimensions.getScreenRatio()).sp,
+            lineHeight = (20 * ScreenDimensions.getScreenRatio()).sp,
             letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp
         )
     )

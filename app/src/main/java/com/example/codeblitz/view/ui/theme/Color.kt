@@ -1,6 +1,7 @@
 package com.example.codeblitz.view.ui.theme
 
 import androidx.compose.ui.graphics.Color
+import androidx.core.content.pm.ShortcutInfoCompat.Surface
 
 val Background = Color(0xff28242D)
 val Primary = Color(0xffDF3E78)

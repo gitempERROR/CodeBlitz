@@ -74,6 +74,8 @@ fun Editor() {
     var selectedOption by remember { mutableStateOf(options[0]) }
     val selectedText = remember { mutableStateOf(options[0]) }
 
+    val popup by remember { mutableStateOf(false) }
+
     val code = """
         width = float(input("Введите ширину прямоугольника: "))
         height = float(input("Введите высоту прямоугольника: "))
@@ -319,6 +321,9 @@ fun Editor() {
                 }
             }
         }
+    }
+    if (popup) {
+        Popup()
     }
 }
 

@@ -149,7 +149,7 @@ fun TaskDesc() {
                     Text(
                         text = "После начала попытки стартует отсчёт времени.",
                         style = CodeBlitzTheme.typography.bodyMedium,
-                        color = CodeBlitzTheme.colors.tertiary
+                        color = CodeBlitzTheme.colors.tertiary,
                     )
                     Text(
                         text = "Возможна только одна попытка!",

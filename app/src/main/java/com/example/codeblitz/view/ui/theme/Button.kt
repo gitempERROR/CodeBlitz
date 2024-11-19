@@ -31,13 +31,7 @@ fun TransparentButtonCodeBlitz(
     modifier: Modifier = Modifier
 ) {
     Button(
-        modifier = modifier
-            .padding(top = 3.dp)
-            .shadow(
-                2.dp,
-                shape = RoundedCornerShape(15.dp)
-            )
-            .padding(bottom = 3.dp),
+        modifier = modifier,
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.Transparent
@@ -64,12 +58,12 @@ fun ButtonCodeBlitz(
 ) {
     Button(
         modifier = modifier
-            .padding(top = 3.dp)
+            .padding(top = 2.dp)
             .shadow(
                 2.dp,
                 shape = RoundedCornerShape(15.dp)
             )
-            .padding(bottom = 3.dp),
+            .padding(bottom = 2.dp),
         onClick = onClick,
         colors = colors,
         shape = RoundedCornerShape(15.dp)
@@ -98,12 +92,12 @@ fun IconButtonCodeBlitz(
 ) {
     Button(
         modifier = modifier
-            .padding(top = 3.dp)
+            .padding(top = 2.dp)
             .shadow(
                 2.dp,
                 shape = RoundedCornerShape(15.dp)
             )
-            .padding(bottom = 3.dp),
+            .padding(bottom = 2.dp),
         onClick = onClick,
         colors = colors,
         shape = RoundedCornerShape(15.dp)

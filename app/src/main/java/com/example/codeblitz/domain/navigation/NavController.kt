@@ -9,6 +9,7 @@ import com.example.codeblitz.view.MainActivity.components.Main
 import com.example.codeblitz.view.MainActivity.components.Login
 import com.example.codeblitz.view.MainActivity.components.Profile
 import com.example.codeblitz.view.MainActivity.components.Register
+import com.example.codeblitz.view.MainActivity.components.Settings
 import com.example.codeblitz.view.MainActivity.components.TaskDesc
 
 @Composable
@@ -34,6 +35,9 @@ fun NavController(controller: NavHostController) {
         }
         composable(Routes.Editor.route) {
             Editor()
+        }
+        composable(Routes.Settings.route) {
+            Settings()
         }
     }
 }

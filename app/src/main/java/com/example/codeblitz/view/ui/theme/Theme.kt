@@ -15,10 +15,6 @@ private val DarkColorScheme = darkColorScheme(
     background = Background,
     onBackground = OnBackground,
     secondaryContainer = SecondaryContainer,
-    surfaceContainer = Background,
-    surfaceBright = Background,
-    surfaceTint = Background,
-    surface = Background
 )
 
 val LocalColors = staticCompositionLocalOf { DarkColorScheme }

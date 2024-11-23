@@ -11,13 +11,14 @@ import com.example.codeblitz.view.MainActivity.components.Login
 import com.example.codeblitz.view.MainActivity.components.Profile
 import com.example.codeblitz.view.MainActivity.components.Register
 import com.example.codeblitz.view.MainActivity.components.Settings
+import com.example.codeblitz.view.MainActivity.components.SolvedTask
 import com.example.codeblitz.view.MainActivity.components.TaskDesc
 
 @Composable
 fun NavController(controller: NavHostController) {
     NavHost(
         navController = controller,
-        startDestination = Routes.Leaderboard.route
+        startDestination = Routes.SolvedTask.route
     ) {
         composable(Routes.Login.route) {
             Login()
@@ -42,6 +43,9 @@ fun NavController(controller: NavHostController) {
         }
         composable(Routes.Leaderboard.route) {
             Leaderboard()
+        }
+        composable(Routes.SolvedTask.route) {
+            SolvedTask()
         }
     }
 }

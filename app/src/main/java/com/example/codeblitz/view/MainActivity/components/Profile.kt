@@ -77,7 +77,8 @@ fun Profile() {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = CodeBlitzTheme.colors.onBackground
                 ),
-                tint = CodeBlitzTheme.colors.primary
+                tint = CodeBlitzTheme.colors.primary,
+                iconId = R.drawable.pointerbackthin
             )
         }
         Spacer(

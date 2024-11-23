@@ -17,6 +17,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,7 @@ fun CustomDropDownMenu(
     options: MutableList<String> = mutableListOf("Python", "C#", "JavaScript", "C++", "Go"),
     onOptionSelected: (String) -> Unit = {},
     backgroundColor: Color = CodeBlitzTheme.colors.onBackground,
+    dividerColor: Color = CodeBlitzTheme.colors.background,
     selectedText: MutableState<String> = mutableStateOf("")
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -54,7 +56,11 @@ fun CustomDropDownMenu(
         Column(
             modifier = modifier
                 .width(185.dp)
-                .background(color = Color.Transparent),
+                .background(color = Color.Transparent)
+                .shadow(
+                    3.dp,
+                    shape = RoundedCornerShape(10.dp)
+                ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ExposedDropdownMenuBox(
@@ -125,7 +131,7 @@ fun CustomDropDownMenu(
                                         .fillMaxWidth()
                                         .height(1.dp)
                                         .padding(horizontal = 5.dp)
-                                        .background(color = CodeBlitzTheme.colors.background)
+                                        .background(color = dividerColor)
                                 )
                             }
                             DropdownMenuItem(

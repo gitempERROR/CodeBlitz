@@ -71,7 +71,6 @@ fun Editor() {
     val theme = remember(themeState) { themeState.theme() }
 
     val options = mutableListOf("Python", "GO")
-    var selectedOption by remember { mutableStateOf(options[0]) }
     val selectedText = remember { mutableStateOf(options[0]) }
 
     val popup by remember { mutableStateOf(false) }

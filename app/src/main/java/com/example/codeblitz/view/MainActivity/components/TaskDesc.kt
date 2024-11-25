@@ -1,5 +1,6 @@
 package com.example.codeblitz.view.MainActivity.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -23,15 +25,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.TaskDescViewModel
+import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.view.ui.theme.ButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
-@Preview
 @Composable
-fun TaskDesc() {
+fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewModel()) {
+    LaunchedEffect(
+        viewModel.navigationStateFlow
+    ) {
+        viewModel.navigationStateFlow.collect { event ->
+            event?.let {
+                if (event.route != Routes.Profile.route)
+                    controller.navigate(event.route)
+                else {
+                    try {
+                        controller.navigate(
+                            "Profile" + "/Main"
+                        )
+                    }
+                    catch (e: Exception){
+                        Log.e("navigation to profile", e.toString())
+                    }
+                }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -59,12 +85,14 @@ fun TaskDesc() {
                     .align(Alignment.CenterStart),
                 iconId = R.drawable.user,
                 modifierIcon = Modifier.padding(5.dp),
-                tint = CodeBlitzTheme.colors.primary
+                tint = CodeBlitzTheme.colors.primary,
+                onClick = { viewModel.navigateToProfile() }
             )
             Box(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(start = 110.dp, end = 110.dp, top = 3.dp).height(60.dp)
+                    .padding(start = 110.dp, end = 110.dp, top = 3.dp)
+                    .height(60.dp)
                     .shadow(
                         2.dp,
                         shape = RoundedCornerShape(10.dp)
@@ -76,9 +104,11 @@ fun TaskDesc() {
                     )
             ) {
                 Text(
-                    text = "Задание",
+                    text = viewModel.title,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.align(Alignment.Center).padding(horizontal = 20.dp),
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 20.dp),
                     style = CodeBlitzTheme.typography.titleMedium,
                     maxLines = 2,
                     color = CodeBlitzTheme.colors.tertiary
@@ -97,7 +127,8 @@ fun TaskDesc() {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = CodeBlitzTheme.colors.background
                 ),
-                tint = CodeBlitzTheme.colors.primary
+                tint = CodeBlitzTheme.colors.primary,
+                onClick = { viewModel.navigateToMain() }
             )
         }
         Box(
@@ -127,7 +158,7 @@ fun TaskDesc() {
                         .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 15.dp)
                 ) {
                     Text(
-                        text = "Empty",
+                        text = viewModel.desc,
                         style = CodeBlitzTheme.typography.titleSmall,
                         color = CodeBlitzTheme.colors.tertiary,
                         modifier = Modifier
@@ -160,7 +191,7 @@ fun TaskDesc() {
                         modifier = Modifier.height(5.dp)
                     )
                     ButtonCodeBlitz(
-                        text = "Начать",
+                        text = if(viewModel.status == "not started") "Начать" else "Продолжить",
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(bottom = 10.dp)

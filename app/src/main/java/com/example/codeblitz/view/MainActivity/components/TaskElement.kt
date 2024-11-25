@@ -1,6 +1,7 @@
 package com.example.codeblitz.view.MainActivity.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,14 +21,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 
-@Preview
 @Composable
 fun TaskElement(
-    title: String = "Empty", desc: String = "Empty", statusIcon: Int = R.drawable.start
+    controller: NavController,
+    title: String = "Empty",
+    desc: String = "Empty",
+    status: String = "not started",
+    id: Int = 0
 ) {
+    val icons = mapOf(
+        "not started" to R.drawable.start
+    )
     Spacer(
         modifier = Modifier.height(20.dp)
     )
@@ -44,6 +53,15 @@ fun TaskElement(
             .background(
                 color = CodeBlitzTheme.colors.primary, shape = RoundedCornerShape(10.dp)
             )
+            .clickable {
+                controller.navigate(
+                    "TaskDesc"
+                    + "/${title}"
+                    + "/${desc}"
+                    + "/${status}"
+                    + "/${id}"
+                )
+            }
     ) {
         Box(
             modifier = Modifier
@@ -73,7 +91,7 @@ fun TaskElement(
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
-                    imageVector = ImageVector.vectorResource(statusIcon),
+                    imageVector = ImageVector.vectorResource(icons[status]!!),
                     modifier = Modifier
                         .align(alignment = Alignment.End)
                         .size(45.dp),

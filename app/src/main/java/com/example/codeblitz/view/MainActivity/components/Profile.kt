@@ -36,8 +36,7 @@ import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 @Composable
 fun Profile(
     controller: NavController,
-    viewModel: ProfileViewModel = hiltViewModel(),
-    backRoute: String = ""
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
 
     LaunchedEffect(
@@ -46,7 +45,7 @@ fun Profile(
         viewModel.navigationStateFlow.collect { event ->
             event?.let {
                 if(event.route != Routes.Login.route)
-                    controller.navigate(backRoute)
+                    controller.navigate(viewModel.backRoute)
                 else
                     controller.navigate(event.route)
             }

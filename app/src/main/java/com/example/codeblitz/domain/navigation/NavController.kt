@@ -31,22 +31,11 @@ fun NavController(controller: NavHostController) {
         composable(Routes.Main.route) {
             Main(controller)
         }
-        composable(
-            Routes.Profile.route,
-            arguments = listOf(
-                navArgument("backRoute") {
-                    type = NavType.StringType
-                }
-            )
-        ) { backStackEntry ->
-            val backRoute = backStackEntry.arguments?.getString("backRoute")
-            Profile(
-                controller,
-                backRoute = backRoute!!
-            )
+        composable(Routes.Profile.route) {
+            Profile(controller)
         }
         composable(Routes.TaskDesc.route) {
-            TaskDesc()
+            TaskDesc(controller)
         }
         composable(Routes.Editor.route) {
             Editor()

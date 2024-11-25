@@ -11,7 +11,7 @@ sealed class Routes(val route: String) {
 
     data object Register    : Routes("Register")
 
-    data object TaskDesc    : Routes("TaskDesc")
+    data object TaskDesc    : Routes("TaskDesc/{title}/{desc}/{status}/{id}")
 
     data object Settings    : Routes("Settings")
 

@@ -107,8 +107,10 @@ fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) 
         ) {
             items(viewModel.tasks) { task ->
                 TaskElement(
+                    controller = controller,
                     title = "Задание " + task.day_task_id.toString(),
-                    desc = task.task_description
+                    desc = task.task_description,
+                    id = task.id
                 )
             }
         }

@@ -67,7 +67,7 @@ fun TaskElement(
                     modifier = Modifier.height(5.dp)
                 )
                 Text(
-                    text = title,
+                    text = desc,
                     style = CodeBlitzTheme.typography.titleSmall,
                     color = CodeBlitzTheme.colors.tertiary,
                     modifier = Modifier.weight(1f)

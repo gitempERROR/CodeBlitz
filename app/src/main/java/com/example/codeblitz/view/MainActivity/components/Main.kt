@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -21,13 +22,15 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.MainViewModel
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
-@Preview
 @Composable
-fun Main() {
+fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -77,8 +80,11 @@ fun Main() {
                 .fillMaxSize()
                 .padding(horizontal = 25.dp)
         ) {
-            items(2) {
-                TaskElement()
+            items(viewModel.tasks) { task ->
+                TaskElement(
+                    title = "Задание " + task.day_task_id.toString(),
+                    desc = task.task_description
+                )
             }
         }
     }

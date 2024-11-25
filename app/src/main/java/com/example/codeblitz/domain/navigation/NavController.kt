@@ -27,7 +27,7 @@ fun NavController(controller: NavHostController) {
             Register(controller)
         }
         composable(Routes.Main.route) {
-            Main()
+            Main(controller)
         }
         composable(Routes.Profile.route) {
             Profile()

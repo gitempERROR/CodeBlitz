@@ -49,6 +49,7 @@ fun TextFieldCodeBlitz(
     isPassword: Boolean = false,
     isSettings: Boolean = false,
     style: TextStyle = CodeBlitzTheme.typography.titleSmall,
+    iconOnClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -129,7 +130,7 @@ fun TextFieldCodeBlitz(
                             Icon(
                                 imageVector = if (isFocused) ImageVector.vectorResource(R.drawable.check)
                                 else ImageVector.vectorResource((R.drawable.pen)),
-                                modifier = if (isFocused) Modifier.clickable {} else Modifier,
+                                modifier = if (isFocused) Modifier.clickable {iconOnClick()} else Modifier,
                                 contentDescription = "",
                                 tint = if (isFocused) CodeBlitzTheme.colors.primary else CodeBlitzTheme.colors.secondary
                             )

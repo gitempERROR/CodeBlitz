@@ -1,5 +1,6 @@
 package com.example.codeblitz.view.MainActivity.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -26,11 +28,33 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.codeblitz.R
 import com.example.codeblitz.domain.MainViewModel
+import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
 @Composable
 fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) {
+    LaunchedEffect(
+        viewModel.navigationStateFlow
+    ) {
+        viewModel.navigationStateFlow.collect { event ->
+            event?.let {
+                if (event.route != Routes.Profile.route)
+                    controller.navigate(event.route)
+                else {
+                    try {
+                        controller.navigate(
+                            "Profile" + "/${Routes.Main.route}"
+                        )
+                    }
+                    catch (e: Exception){
+                        Log.e("navigation to profile", e.toString())
+                    }
+                }
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +82,8 @@ fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) 
                     .align(Alignment.CenterStart),
                 iconId = R.drawable.user,
                 modifierIcon = Modifier.padding(5.dp),
-                tint = CodeBlitzTheme.colors.primary
+                tint = CodeBlitzTheme.colors.primary,
+                onClick = { viewModel.navigateToProfile() }
             )
             Text(
                 text = "Задания на сегодня",

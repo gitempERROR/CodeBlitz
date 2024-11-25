@@ -54,19 +54,15 @@ class LoginViewModel @Inject constructor() : BaseViewModel() {
         }
     }
 
-    private fun getUserData(){
+    private suspend fun getUserData(){
         try {
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    val userId = Constants.supabase.auth.currentUserOrNull()!!.id
-                    val userData: UserData = Constants.supabase.from("user_data").select {
-                        filter {
-                            UserData::id eq userId
-                        }
-                    }.decodeSingle()
-                    CurrentUser.setUserData(userData)
+            val userId = Constants.supabase.auth.currentUserOrNull()!!.id
+            val userData: UserData = Constants.supabase.from("user_data").select {
+                filter {
+                    UserData::id eq userId
                 }
-            }
+            }.decodeSingle()
+            CurrentUser.setUserData(userData)
         }
         catch (e: Exception) {
             Log.e("supabase", "getUserData: $e")

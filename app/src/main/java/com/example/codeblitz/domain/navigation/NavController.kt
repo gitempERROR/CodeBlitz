@@ -3,7 +3,9 @@ package com.example.codeblitz.domain.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.codeblitz.view.MainActivity.components.Editor
 import com.example.codeblitz.view.MainActivity.components.Leaderboard
 import com.example.codeblitz.view.MainActivity.components.Main
@@ -29,8 +31,19 @@ fun NavController(controller: NavHostController) {
         composable(Routes.Main.route) {
             Main(controller)
         }
-        composable(Routes.Profile.route) {
-            Profile()
+        composable(
+            Routes.Profile.route,
+            arguments = listOf(
+                navArgument("backRoute") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val backRoute = backStackEntry.arguments?.getString("backRoute")
+            Profile(
+                controller,
+                backRoute = backRoute!!
+            )
         }
         composable(Routes.TaskDesc.route) {
             TaskDesc()

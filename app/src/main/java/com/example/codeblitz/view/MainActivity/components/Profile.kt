@@ -14,22 +14,45 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.ProfileViewModel
+import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.view.ui.theme.ButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
-@Preview
 @Composable
-fun Profile() {
+fun Profile(
+    controller: NavController,
+    viewModel: ProfileViewModel = hiltViewModel(),
+    backRoute: String = ""
+) {
+
+    LaunchedEffect(
+        viewModel.navigationStateFlow
+    ) {
+        viewModel.navigationStateFlow.collect { event ->
+            event?.let {
+                if(event.route != Routes.Login.route)
+                    controller.navigate(backRoute)
+                else
+                    controller.navigate(event.route)
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,14 +99,18 @@ fun Profile() {
                     containerColor = CodeBlitzTheme.colors.onBackground
                 ),
                 tint = CodeBlitzTheme.colors.primary,
-                iconId = R.drawable.pointerbackthin
+                iconId = R.drawable.pointerbackthin,
+                onClick = { viewModel.navigateBack() }
             )
         }
         Spacer(
             modifier = Modifier.height(25.dp)
         )
         TextFieldCodeBlitz(
-            modifier = Modifier.padding(horizontal = 35.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(horizontal = 35.dp)
+                .fillMaxWidth()
+                .onFocusChanged { if(!it.isFocused) viewModel.refreshFields() },
             internalModifier = Modifier.fillMaxWidth().height(35.dp),
             labelGap = 20.dp,
             label = "Имя",
@@ -94,13 +121,23 @@ fun Profile() {
                 bottom = 0.dp
             ),
             style = CodeBlitzTheme.typography.bodyLarge,
-            isSettings = true
+            isSettings = true,
+            text = viewModel.userData.firstname,
+            onValueChange = { newValue ->
+                viewModel.setUserData(
+                    viewModel.userData.copy(firstname = newValue)
+                )
+            },
+            iconOnClick = {viewModel.updateUserData()}
         )
         Spacer(
             modifier = Modifier.height(20.dp)
         )
         TextFieldCodeBlitz(
-            modifier = Modifier.padding(horizontal = 35.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(horizontal = 35.dp)
+                .fillMaxWidth()
+                .onFocusChanged { if(!it.isFocused) viewModel.refreshFields() },
             internalModifier = Modifier.fillMaxWidth().height(35.dp),
             labelGap = 20.dp,
             label = "Фамилия",
@@ -111,13 +148,23 @@ fun Profile() {
                 bottom = 0.dp
             ),
             style = CodeBlitzTheme.typography.bodyLarge,
-            isSettings = true
+            isSettings = true,
+            text = viewModel.userData.surname,
+            onValueChange = { newValue ->
+                viewModel.setUserData(
+                    viewModel.userData.copy(surname = newValue)
+                )
+            },
+            iconOnClick = {viewModel.updateUserData()}
         )
         Spacer(
             modifier = Modifier.height(20.dp)
         )
         TextFieldCodeBlitz(
-            modifier = Modifier.padding(horizontal = 35.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(horizontal = 35.dp)
+                .fillMaxWidth()
+                .onFocusChanged { if(!it.isFocused) viewModel.refreshFields() },
             internalModifier = Modifier.fillMaxWidth().height(35.dp),
             labelGap = 20.dp,
             label = "Имя пользователя",
@@ -128,7 +175,14 @@ fun Profile() {
                 bottom = 0.dp
             ),
             style = CodeBlitzTheme.typography.bodyLarge,
-            isSettings = true
+            isSettings = true,
+            text = viewModel.userData.nickname,
+            onValueChange = { newValue ->
+                viewModel.setUserData(
+                    viewModel.userData.copy(nickname = newValue)
+                )
+            },
+            iconOnClick = {viewModel.updateUserData()}
         )
         Spacer(
             modifier = Modifier.weight(1f)
@@ -139,7 +193,8 @@ fun Profile() {
                 .align(Alignment.CenterHorizontally)
                 .padding(start = 35.dp, end = 35.dp, bottom = 50.dp)
                 .height(65.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            onClick = { viewModel.exit() }
         )
     }
 }

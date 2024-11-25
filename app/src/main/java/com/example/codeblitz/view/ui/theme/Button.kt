@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.codeblitz.R
+import kotlin.reflect.jvm.internal.impl.types.checker.TypeRefinementSupport.Enabled
 
 
 @Composable
@@ -48,13 +49,15 @@ fun TransparentButtonCodeBlitz(
 
 @Composable
 fun ButtonCodeBlitz(
-    text: String = "Button",
-    onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
     textModifier: Modifier = Modifier,
+    text: String = "Button",
+    onClick: () -> Unit = {},
     colors: ButtonColors = ButtonDefaults.buttonColors(
-        containerColor = CodeBlitzTheme.colors.background
-    )
+        containerColor = CodeBlitzTheme.colors.background,
+        disabledContainerColor = CodeBlitzTheme.colors.secondaryContainer
+    ),
+    enabled: Boolean = true
 ) {
     Button(
         modifier = modifier
@@ -66,7 +69,8 @@ fun ButtonCodeBlitz(
             .padding(bottom = 2.dp),
         onClick = onClick,
         colors = colors,
-        shape = RoundedCornerShape(15.dp)
+        shape = RoundedCornerShape(15.dp),
+        enabled = enabled
     )
     {
         Text(

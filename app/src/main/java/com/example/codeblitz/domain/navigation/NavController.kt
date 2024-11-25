@@ -18,13 +18,13 @@ import com.example.codeblitz.view.MainActivity.components.TaskDesc
 fun NavController(controller: NavHostController) {
     NavHost(
         navController = controller,
-        startDestination = Routes.SolvedTask.route
+        startDestination = Routes.Login.route
     ) {
         composable(Routes.Login.route) {
-            Login()
+            Login(controller)
         }
         composable(Routes.Register.route) {
-            Register()
+            Register(controller)
         }
         composable(Routes.Main.route) {
             Main()

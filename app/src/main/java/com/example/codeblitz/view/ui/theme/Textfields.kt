@@ -1,6 +1,5 @@
 package com.example.codeblitz.view.ui.theme
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,7 +42,8 @@ fun TextFieldCodeBlitz(
     modifier: Modifier = Modifier,
     labelGap: Dp = 5.dp,
     internalModifier: Modifier = Modifier,
-    text: String = "TextField_label",
+    label: String = "TextField_label",
+    text: String = "Empty",
     paddingValues: PaddingValues = PaddingValues(10.dp),
     onValueChange: (String) -> Unit = {},
     isPassword: Boolean = false,
@@ -54,10 +53,10 @@ fun TextFieldCodeBlitz(
     Column(
         modifier = modifier
     ) {
-        var shown by remember { mutableStateOf(if (isPassword) isPassword else null) }
+        var shown by remember { mutableStateOf(if (isPassword) false else null) }
         var isFocused by remember { mutableStateOf(false)}
         Text(
-            text = text,
+            text = label,
             style = style,
             color = CodeBlitzTheme.colors.tertiary
         )
@@ -66,7 +65,7 @@ fun TextFieldCodeBlitz(
         )
         val interactionSource = remember { MutableInteractionSource() }
         BasicTextField(
-            value = "Empty",
+            value = text,
             onValueChange = onValueChange,
             modifier = internalModifier
                 .onFocusChanged { isFocused = it.isFocused }
@@ -79,7 +78,7 @@ fun TextFieldCodeBlitz(
             interactionSource = interactionSource,
             enabled = true,
             singleLine = true,
-            textStyle = if (isSettings) TextStyle(
+            textStyle = if (!isSettings) TextStyle(
                 fontFamily = JetBrains,
                 fontWeight = FontWeight.Normal,
                 fontSize = (15 * ScreenDimensions.getScreenRatio()).sp,
@@ -97,7 +96,7 @@ fun TextFieldCodeBlitz(
             visualTransformation = if (shown != null) (if (!shown!!) PasswordVisualTransformation() else VisualTransformation.None) else VisualTransformation.None
         ) { innerTextField ->
             TextFieldDefaults.DecorationBox(
-                value = "Empty",
+                value = text,
                 innerTextField = innerTextField,
                 singleLine = true,
                 enabled = true,
@@ -108,9 +107,9 @@ fun TextFieldCodeBlitz(
                     focusedContainerColor = CodeBlitzTheme.colors.secondaryContainer,
                     unfocusedContainerColor = if (isSettings) CodeBlitzTheme.colors.background else CodeBlitzTheme.colors.secondaryContainer,
                     focusedTextColor = CodeBlitzTheme.colors.primary,
-                    unfocusedTextColor = if (isSettings) CodeBlitzTheme.colors.tertiary else CodeBlitzTheme.colors.primary,
+                    unfocusedTextColor = if (isSettings) CodeBlitzTheme.colors.secondary else CodeBlitzTheme.colors.primary,
                     focusedPlaceholderColor = CodeBlitzTheme.colors.primary,
-                    unfocusedPlaceholderColor = if (isSettings) CodeBlitzTheme.colors.tertiary else CodeBlitzTheme.colors.primary,
+                    unfocusedPlaceholderColor = if (isSettings) CodeBlitzTheme.colors.secondary else CodeBlitzTheme.colors.primary,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     cursorColor = CodeBlitzTheme.colors.tertiary

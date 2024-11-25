@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -31,19 +32,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.RegisterViewModel
 import com.example.codeblitz.view.ui.theme.ButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
 
-@Preview
 @Composable
-fun Register() {
+fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
     val configuration = LocalConfiguration.current
     val vertical = remember {
         derivedStateOf { configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
     }
+
+    LaunchedEffect(viewModel.navigationStateFlow) {
+        viewModel.navigationStateFlow.collect { event ->
+            event?.let { controller.navigate(event.route) }
+        }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize().background(color = CodeBlitzTheme.colors.background)
     )
@@ -109,8 +119,14 @@ fun Register() {
                                 modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
-                                text = "Логин",
-                                paddingValues = PaddingValues(12.dp)
+                                label = "Логин",
+                                paddingValues = PaddingValues(12.dp),
+                                text = viewModel.registerData.login,
+                                onValueChange = { newValue ->
+                                    viewModel.updateRegisterData(
+                                        viewModel.registerData.copy(login = newValue)
+                                    )
+                                }
                             )
                             Spacer(
                                 modifier = Modifier.height(40.dp)
@@ -119,9 +135,15 @@ fun Register() {
                                 modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
-                                text = "Пароль",
+                                label = "Пароль",
                                 paddingValues = PaddingValues(12.dp),
-                                isPassword = true
+                                isPassword = true,
+                                text = viewModel.registerData.password,
+                                onValueChange = { newValue ->
+                                    viewModel.updateRegisterData(
+                                        viewModel.registerData.copy(password = newValue)
+                                    )
+                                }
                             )
                             Spacer(
                                 modifier = Modifier.height(40.dp)
@@ -130,14 +152,20 @@ fun Register() {
                                 modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
-                                text = "Повторите пароль",
+                                label = "Повторите пароль",
                                 paddingValues = PaddingValues(12.dp),
-                                isPassword = true
+                                isPassword = true,
+                                text = viewModel.confirmPass,
+                                onValueChange = { newValue ->
+                                    viewModel.updateConfirmPassword(
+                                        newValue
+                                    )
+                                }
                             )
-                            Spacer(
-                                modifier = Modifier.height(20.dp)
-                            )
-                            if (true) {
+                            if (viewModel.isError) {
+                                Spacer(
+                                    modifier = Modifier.height(20.dp)
+                                )
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -149,6 +177,52 @@ fun Register() {
                                 ){
                                     Text(
                                         "Логин занят!",
+                                        style = CodeBlitzTheme.typography.bodyMedium,
+                                        color = CodeBlitzTheme.colors.tertiary,
+                                        modifier = Modifier.align(Alignment.Center).padding(horizontal = 12.dp, vertical = 12.dp),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 2
+                                    )
+                                }
+                            }
+                            if (!viewModel.emailValid) {
+                                Spacer(
+                                    modifier = Modifier.height(20.dp)
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp)
+                                        .background(
+                                            color = CodeBlitzTheme.colors.background,
+                                            shape = RoundedCornerShape(10.dp)
+                                        ),
+                                ){
+                                    Text(
+                                        "Некорректная почта!",
+                                        style = CodeBlitzTheme.typography.bodyMedium,
+                                        color = CodeBlitzTheme.colors.tertiary,
+                                        modifier = Modifier.align(Alignment.Center).padding(horizontal = 12.dp, vertical = 12.dp),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 2
+                                    )
+                                }
+                            }
+                            if (viewModel.passwordWeak) {
+                                Spacer(
+                                    modifier = Modifier.height(20.dp)
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 12.dp)
+                                        .background(
+                                            color = CodeBlitzTheme.colors.background,
+                                            shape = RoundedCornerShape(10.dp)
+                                        ),
+                                ){
+                                    Text(
+                                        "Слишком слабый пароль!",
                                         style = CodeBlitzTheme.typography.bodyMedium,
                                         color = CodeBlitzTheme.colors.tertiary,
                                         modifier = Modifier.align(Alignment.Center).padding(horizontal = 12.dp, vertical = 12.dp),
@@ -246,7 +320,9 @@ fun Register() {
                     .align(Alignment.Center)
                     .zIndex(4f)
                     .offset(y = 10.dp),
-                text = "Регистрация"
+                text = "Регистрация",
+                enabled = viewModel.isButtonEnabled,
+                onClick = { viewModel.register() }
             )
         }
         IconButtonCodeBlitz(
@@ -254,7 +330,8 @@ fun Register() {
                 .size(65.dp)
                 .offset(x = -(12.5.dp), y = -(12.5.dp))
                 .align(Alignment.BottomEnd)
-                .zIndex(4f)
+                .zIndex(4f),
+            onClick = { viewModel.navigateToLogin() }
         )
     }
 }

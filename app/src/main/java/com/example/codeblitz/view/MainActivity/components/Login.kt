@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,22 +28,31 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.LoginViewModel
 import com.example.codeblitz.view.ui.theme.ButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentButtonCodeBlitz
 
-@Preview
 @Composable
-fun Login() {
+fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewModel()) {
     val configuration = LocalConfiguration.current
     val vertical = remember {
         derivedStateOf { configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
     }
+    LaunchedEffect(
+        viewModel.navigationStateFlow
+    ) {
+        viewModel.navigationStateFlow.collect { event ->
+            event?.let { controller.navigate(event.route) }
+        }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize().background(color = CodeBlitzTheme.colors.background)
     )
@@ -108,7 +118,13 @@ fun Login() {
                                 modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
-                                text = "Логин",
+                                label = "Логин",
+                                text = viewModel.loginData.login,
+                                onValueChange = {newValue ->
+                                    viewModel.updateLoginData(
+                                        viewModel.loginData.copy(login = newValue)
+                                    )
+                                },
                                 paddingValues = PaddingValues(12.dp)
                             )
                             Spacer(
@@ -118,7 +134,13 @@ fun Login() {
                                 modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
-                                text = "Пароль",
+                                label = "Пароль",
+                                text = viewModel.loginData.password,
+                                onValueChange = {newValue ->
+                                    viewModel.updateLoginData(
+                                        viewModel.loginData.copy(password = newValue)
+                                    )
+                                },
                                 paddingValues = PaddingValues(12.dp),
                                 isPassword = true
                             )
@@ -127,12 +149,13 @@ fun Login() {
                             )
                             TransparentButtonCodeBlitz(
                                 text = "Зарегистрироваться",
-                                modifier = Modifier.fillMaxWidth().padding(horizontal = 5.dp)
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 5.dp),
+                                onClick = { viewModel.navigateToRegister() }
                             )
                             Spacer(
                                 modifier = Modifier.height(12.dp)
                             )
-                            if (true) {
+                            if (viewModel.isError) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -241,7 +264,9 @@ fun Login() {
                     .align(Alignment.Center)
                     .zIndex(4f)
                     .offset(y = 10.dp),
-                text = "Вход"
+                text = "Вход",
+                onClick = { viewModel.login() },
+                enabled = viewModel.isButtonEnabled
             )
         }
     }

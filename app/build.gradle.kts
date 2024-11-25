@@ -1,11 +1,15 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization") version "2.0.21" apply true
 }
 
 android {
     namespace = "com.example.codeblitz"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.codeblitz"
@@ -49,6 +53,10 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy.force("commons-codec:commons-codec:1.9")
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -71,4 +79,24 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.compose.code.editor)
+
+    // Supabase
+    implementation(platform(libs.bom))
+    implementation(libs.postgrest.kt)
+    implementation(libs.auth.kt)
+    implementation(libs.realtime.kt)
+    implementation(libs.ktor.client.cio)
+    // Supabase
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.52")
+    kapt("com.google.dagger:hilt-android-compiler:2.52")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    // Hilt
+
+    implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
+}
+
+kapt {
+    correctErrorTypes = true
 }

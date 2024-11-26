@@ -7,5 +7,6 @@ data class Tasks (
     val id: Int,
     val day_id: Int,
     val day_task_id: Int,
-    val task_description: String
+    val task_description: String,
+    var task_status: String = "not started"
 )

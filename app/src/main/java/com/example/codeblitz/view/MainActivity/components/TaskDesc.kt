@@ -42,8 +42,16 @@ fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewM
     ) {
         viewModel.navigationStateFlow.collect { event ->
             event?.let {
-                if (event.route != Routes.Profile.route)
+                if (event.route != Routes.Profile.route && event.route != Routes.Editor.route)
                     controller.navigate(event.route)
+                else if (event.route == Routes.Editor.route) {
+                    controller.navigate("Editor"
+                    + "/${viewModel.title}"
+                    + "/${viewModel.desc}"
+                    + "/${viewModel.status}"
+                    + "/${viewModel.id}"
+                    )
+                }
                 else {
                     try {
                         controller.navigate(
@@ -199,7 +207,8 @@ fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewM
                         textModifier = Modifier.padding(horizontal = 20.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = CodeBlitzTheme.colors.onBackground
-                        )
+                        ),
+                        onClick = { viewModel.navigateToEditor() }
                     )
                 }
             }

@@ -110,7 +110,8 @@ fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) 
                     controller = controller,
                     title = "Задание " + task.day_task_id.toString(),
                     desc = task.task_description,
-                    id = task.id
+                    id = task.id,
+                    status = task.task_status
                 )
             }
         }

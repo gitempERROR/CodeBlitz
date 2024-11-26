@@ -5,7 +5,7 @@ sealed class Routes(val route: String) {
 
     data object Login       : Routes("Login")
 
-    data object Editor      : Routes("Editor")
+    data object Editor      : Routes("Editor/{title}/{desc}/{status}/{id}")
 
     data object Profile     : Routes("Profile/{backRoute}")
 

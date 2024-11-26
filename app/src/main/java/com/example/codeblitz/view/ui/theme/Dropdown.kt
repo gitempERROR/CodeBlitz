@@ -199,6 +199,7 @@ fun CustomDropDownMenu(
                                     expanded = false
                                     options.removeAt(index)
                                     options.add(0, selectedText.value)
+                                    onOptionSelected(selectedText.value)
                                 },
                                 contentPadding = PaddingValues(start = 10.dp, end = 0.dp, top = 0.dp, bottom = 0.dp),
                                 modifier = Modifier

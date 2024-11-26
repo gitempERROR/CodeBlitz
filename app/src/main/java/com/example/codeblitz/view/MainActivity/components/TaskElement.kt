@@ -19,11 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.codeblitz.R
-import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 
 @Composable
@@ -34,9 +32,39 @@ fun TaskElement(
     status: String = "not started",
     id: Int = 0
 ) {
+
     val icons = mapOf(
-        "not started" to R.drawable.start
+        "not started" to R.drawable.start,
+        "started" to R.drawable.ellipsis,
+        "solved" to R.drawable.finished,
+        "approved" to R.drawable.check,
+        "denied" to R.drawable.cross
     )
+
+    val backgroundColors = mapOf(
+        "not started" to CodeBlitzTheme.colors.primary,
+        "started" to CodeBlitzTheme.colors.tertiary,
+        "solved" to CodeBlitzTheme.colors.tertiary,
+        "approved" to CodeBlitzTheme.colors.secondary,
+        "denied" to CodeBlitzTheme.colors.secondaryContainer
+    )
+
+    val iconColors = mapOf(
+        "not started" to CodeBlitzTheme.colors.secondary,
+        "started" to CodeBlitzTheme.colors.secondary,
+        "solved" to CodeBlitzTheme.colors.tertiary,
+        "approved" to CodeBlitzTheme.colors.secondary,
+        "denied" to CodeBlitzTheme.colors.secondaryContainer
+    )
+
+    val textColors = mapOf(
+        "not started" to CodeBlitzTheme.colors.tertiary,
+        "started" to CodeBlitzTheme.colors.tertiary,
+        "solved" to CodeBlitzTheme.colors.tertiary,
+        "approved" to CodeBlitzTheme.colors.secondary,
+        "denied" to CodeBlitzTheme.colors.secondaryContainer
+    )
+
     Spacer(
         modifier = Modifier.height(20.dp)
     )
@@ -51,7 +79,7 @@ fun TaskElement(
             .fillMaxWidth()
             .height(360.dp)
             .background(
-                color = CodeBlitzTheme.colors.primary, shape = RoundedCornerShape(10.dp)
+                color = backgroundColors[status]!!, shape = RoundedCornerShape(10.dp)
             )
             .clickable {
                 controller.navigate(
@@ -79,7 +107,7 @@ fun TaskElement(
                 Text(
                     text = title,
                     style = CodeBlitzTheme.typography.bodyLarge,
-                    color = CodeBlitzTheme.colors.tertiary
+                    color = textColors[status]!!
                 )
                 Spacer(
                     modifier = Modifier.height(5.dp)
@@ -87,7 +115,7 @@ fun TaskElement(
                 Text(
                     text = desc,
                     style = CodeBlitzTheme.typography.titleSmall,
-                    color = CodeBlitzTheme.colors.tertiary,
+                    color = textColors[status]!!,
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
@@ -95,7 +123,7 @@ fun TaskElement(
                     modifier = Modifier
                         .align(alignment = Alignment.End)
                         .size(45.dp),
-                    tint = CodeBlitzTheme.colors.secondary,
+                    tint = iconColors[status]!!,
                     contentDescription = ""
                 )
             }

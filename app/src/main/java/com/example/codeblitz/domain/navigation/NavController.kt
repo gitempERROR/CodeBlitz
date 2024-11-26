@@ -38,7 +38,7 @@ fun NavController(controller: NavHostController) {
             TaskDesc(controller)
         }
         composable(Routes.Editor.route) {
-            Editor()
+            Editor(controller)
         }
         composable(Routes.Settings.route) {
             Settings()

@@ -44,59 +44,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.EditorViewModel
 import com.example.codeblitz.domain.utils.ScreenDimensions
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.CustomDropDownMenu
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.JetBrains
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
-import com.wakaztahir.codeeditor.highlight.model.CodeLang
-import com.wakaztahir.codeeditor.highlight.prettify.PrettifyParser
-import com.wakaztahir.codeeditor.highlight.theme.CodeThemeType
-import com.wakaztahir.codeeditor.highlight.utils.parseCodeAsAnnotatedString
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun Editor() {
-    val language = CodeLang.Python
-
-    val parser = remember { PrettifyParser() }
-    var themeState by remember { mutableStateOf(CodeThemeType.Monokai) }
-    val theme = remember(themeState) { themeState.theme() }
-
-    val options = mutableListOf("Python", "GO")
-    val selectedText = remember { mutableStateOf(options[0]) }
-
+fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel()) {
     val popup by remember { mutableStateOf(false) }
 
-    val code = """
-        width = float(input("Введите ширину прямоугольника: "))
-        height = float(input("Введите высоту прямоугольника: "))
-        area = width * height
-        print(f"Площадь прямоугольника: {area}")
-    """.trimIndent()
-
-    var textFieldValue by remember {
-        mutableStateOf(
-            TextFieldValue(
-                annotatedString = parseCodeAsAnnotatedString(
-                    parser = parser,
-                    theme = theme,
-                    lang = language,
-                    code = code
-                )
-            )
-        )
-    }
-
     var taskOpened by remember { mutableStateOf(false) }
-    val lineCount by remember { derivedStateOf { countAndFormatNewLines(textFieldValue) } }
+    val lineCount by remember { derivedStateOf { countAndFormatNewLines(viewModel.textFieldValue) } }
 
     val containerHeight by remember { derivedStateOf { if (taskOpened) 800.dp else 85.dp } }
     val animatedContainerHeight by animateDpAsState(
@@ -179,7 +147,7 @@ fun Editor() {
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(horizontal = 20.dp, vertical = (15.5).dp),
-                    text = "Задание",
+                    text = viewModel.title,
                     textAlign = TextAlign.Center,
                     style = CodeBlitzTheme.typography.titleMedium,
                     maxLines = 2,
@@ -196,7 +164,7 @@ fun Editor() {
                 )
                 if(taskOpened) {
                     Text(
-                        text = "Empdaty EmpdatyEmpdatyEmpdaty EmpdatyEmpdaty Empdaty v Empdaty Empdaty EmpdatyEmpdaty  Empdaty EmpdatyEmpdatyEmpdatyv Empdatyv  vv EmpdatyEmpdaty EmpdatyEmp Empdaty EmpdatyEmpdatyEmpdaty EmpdatyEmpdaty Empdaty v Empdaty Empdaty EmpdatyEmpdaty  Empdaty EmpdatyEmpdatyEmpdatyv Empdatyv  vv EmpdatyEmpdaty EmpdatyEmpdaty Empdaty Empdaty EmpdatyEmpdatyEmpdaty EmpdatyEmpdaty Empdaty v Empdaty Empdaty EmpdatyEmpdaty  Empdaty EmpdatyEmpdatyEmpdatyv Empdatyv  vv EmpdatyEmpdaty EmpdatyEmpdaty Empdaty  Empdaty EmpdatyEmpdatyEmpdaty EmpdatyEmpdaty Empdaty v Empdaty Empdaty EmpdatyEmpdaty  Empdaty EmpdatyEmpdatyEmpdatyv Empdatyv  vv EmpdatyEmpdaty EmpdatyEmpdaty Empdaty Empdaty EmpdatyEmpdatyEmpdaty EmpdatyEmpdaty Empdaty v Empdaty Empdaty EmpdatyEmpdaty  Empdaty EmpdatyEmpdatyEmpdatyv Empdatyv  vv EmpdatyEmpdaty EmpdatyEmpdaty Empdatydaty Empdaty",
+                        text = viewModel.desc,
                         style = CodeBlitzTheme.typography.titleSmall,
                         color = CodeBlitzTheme.colors.tertiary,
                         modifier = Modifier
@@ -243,8 +211,9 @@ fun Editor() {
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(vertical = 10.dp, horizontal = 10.dp),
-                selectedText = selectedText,
-                options = options
+                selectedText = viewModel.selectedOption,
+                options = viewModel.options,
+                onOptionSelected = { newValue -> viewModel.setSelectedLanguage(newValue) }
             )
             Box(
                 modifier = Modifier
@@ -275,16 +244,9 @@ fun Editor() {
                 )
                 val interactionSource = remember { MutableInteractionSource() }
                 BasicTextField(
-                    value = textFieldValue,
+                    value = viewModel.textFieldValue,
                     onValueChange = {
-                        textFieldValue = it.copy(
-                            annotatedString = parseCodeAsAnnotatedString(
-                                parser = parser,
-                                theme = theme,
-                                lang = language,
-                                code = it.text
-                            )
-                        )
+                        viewModel.changeCode(it)
                     },
                     textStyle = TextStyle(
                         fontFamily = JetBrains,

@@ -3,8 +3,12 @@ package com.example.codeblitz.domain
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.example.codeblitz.domain.navigation.Routes
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,5 +38,13 @@ class TaskDescViewModel @Inject constructor(savedStateHandle: SavedStateHandle) 
 
     fun navigateToProfile() {
         _navigationStateFlow.value = Routes.Profile
+    }
+
+    fun navigateToEditor() {
+        _navigationStateFlow.value = Routes.Editor
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+            }
+        }
     }
 }

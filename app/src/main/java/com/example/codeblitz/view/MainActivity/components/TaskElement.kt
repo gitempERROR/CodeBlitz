@@ -82,13 +82,15 @@ fun TaskElement(
                 color = backgroundColors[status]!!, shape = RoundedCornerShape(10.dp)
             )
             .clickable {
-                controller.navigate(
-                    "TaskDesc"
-                    + "/${title}"
-                    + "/${desc}"
-                    + "/${status}"
-                    + "/${id}"
-                )
+                if (status == "not started" || status == "started") {
+                    controller.navigate(
+                        "TaskDesc"
+                                + "/${title}"
+                                + "/${desc}"
+                                + "/${status}"
+                                + "/${id}"
+                    )
+                }
             }
     ) {
         Box(

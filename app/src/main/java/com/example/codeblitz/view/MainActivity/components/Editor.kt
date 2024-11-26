@@ -28,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,7 +62,14 @@ import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel()) {
-    val popup by remember { mutableStateOf(false) }
+
+    LaunchedEffect(
+        viewModel.navigationStateFlow
+    ) {
+        viewModel.navigationStateFlow.collect { event ->
+            event?.let { controller.navigate(event.route) }
+        }
+    }
 
     var taskOpened by remember { mutableStateOf(false) }
     val lineCount by remember { derivedStateOf { countAndFormatNewLines(viewModel.textFieldValue) } }
@@ -184,12 +192,14 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
                         ),
                         tint = CodeBlitzTheme.colors.secondary,
                         iconId = R.drawable.check,
-                        modifierIcon = Modifier.scale(2.3f)
+                        modifierIcon = Modifier.scale(2.3f),
+                        onClick = { viewModel.switchPopup() }
                     )
                 }
             }
         }
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -283,8 +293,11 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
             }
         }
     }
-    if (popup) {
-        Popup()
+    if (viewModel.popup) {
+        Popup(
+            onCloseClick = { viewModel.switchPopup() },
+            onEndClick = { viewModel.endTask() }
+        )
     }
 }
 

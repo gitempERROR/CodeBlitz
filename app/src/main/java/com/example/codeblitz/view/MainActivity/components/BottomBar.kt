@@ -21,13 +21,16 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
-@Preview
 @Composable
-fun BottomBar(){
+fun BottomBar(
+    controller: NavController
+){
     Box (
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -52,7 +55,8 @@ fun BottomBar(){
                 .align(Alignment.BottomCenter)
                 .zIndex(4f),
             iconId = R.drawable.home,
-            modifierIcon = Modifier.padding(13.dp)
+            modifierIcon = Modifier.padding(13.dp),
+            onClick = { controller.navigate(Routes.Main.route) }
         )
         Column(
             modifier = Modifier.align(Alignment.BottomCenter)
@@ -76,7 +80,8 @@ fun BottomBar(){
                         .weight(1f)
                         .fillMaxHeight()
                         .padding(vertical = 6.dp),
-                    iconId = R.drawable.leaderboard
+                    iconId = R.drawable.leaderboard,
+                    onClick = { controller.navigate(Routes.Leaderboard.route) }
                 )
                 Spacer(
                     modifier = Modifier.weight(1.3f)
@@ -86,7 +91,8 @@ fun BottomBar(){
                         .weight(1f)
                         .fillMaxHeight()
                         .padding(vertical = 6.dp),
-                    iconId = R.drawable.settings
+                    iconId = R.drawable.settings,
+                    onClick = { controller.navigate(Routes.Settings.route) }
                 )
                 Spacer(
                     modifier = Modifier.weight(0.4f)

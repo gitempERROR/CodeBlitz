@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
             CodeBlitzTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    bottomBar = { if (showBottomBar) BottomBar() }
+                    bottomBar = { if (showBottomBar) BottomBar(controller) }
                 ) { innerPadding ->
                     Box(
                         modifier = Modifier.padding(innerPadding)

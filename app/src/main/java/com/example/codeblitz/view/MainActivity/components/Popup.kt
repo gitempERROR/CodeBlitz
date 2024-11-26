@@ -23,7 +23,10 @@ import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
 @Composable
-fun Popup() {
+fun Popup(
+    onCloseClick: () -> Unit = {},
+    onEndClick: () -> Unit = {}
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -52,7 +55,7 @@ fun Popup() {
                         modifier = Modifier.weight(0.8f)
                     )
                     TransparentIconButtonCodeBlitz(
-                        onClick = {},
+                        onClick = { onCloseClick() },
                         modifier = Modifier.weight(0.2f).align(Alignment.Top),
                         modifierIcon = Modifier.align(Alignment.Top),
                         iconId = R.drawable.cross,
@@ -72,7 +75,7 @@ fun Popup() {
                 )
                 ButtonCodeBlitz(
                     text="Закончить",
-                    onClick = {},
+                    onClick = { onEndClick() },
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 30.dp)
                 )
             }

@@ -8,10 +8,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.domain.utils.Constants
 import com.example.codeblitz.domain.utils.CurrentUser
+import com.example.codeblitz.domain.utils.currentTime
 import com.example.codeblitz.model.Languages
+import com.example.codeblitz.model.SolutionStatuses
 import com.example.codeblitz.model.TaskSolutions
+import com.example.codeblitz.model.TaskSolutionsInsert
+import com.example.codeblitz.model.TaskSolutionsUpdate
 import com.wakaztahir.codeeditor.highlight.model.CodeLang
 import com.wakaztahir.codeeditor.highlight.prettify.PrettifyParser
 import com.wakaztahir.codeeditor.highlight.theme.CodeThemeType
@@ -22,12 +27,15 @@ import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
 class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : BaseViewModel() {
     private val _status: MutableState<String> = mutableStateOf("")
-    val status: String get() = _status.value
+
+    private val _popup: MutableState<Boolean> = mutableStateOf(false)
+    val popup: Boolean get() = _popup.value
 
     private val _title: MutableState<String> = mutableStateOf("")
     val title: String get() = _title.value
@@ -37,6 +45,8 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
 
     private val _id: MutableState<String> = mutableStateOf("")
     val id: String get() = _id.value
+
+    private lateinit var startTime: LocalTime
 
     private val _languageList: MutableState<List<Languages>> = mutableStateOf(mutableListOf())
     private var _selectedLanguage: MutableState<Languages?> = mutableStateOf(null)
@@ -81,6 +91,10 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
         )
     }
 
+    fun switchPopup() {
+        _popup.value = !_popup.value
+    }
+
     fun setSelectedLanguage(languageName: String) {
         selectedOption.value = languageName
         _languageList.value.forEach { item ->
@@ -90,6 +104,45 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                 changeCode(_textFieldValue.value)
             }
         }
+    }
+
+    fun endTask() {
+        _status.value = "solved"
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                try {
+                    val solutionStatus: SolutionStatuses = Constants.supabase.from("solution_statuses")
+                        .select {
+                            filter {
+                                SolutionStatuses::status_name eq "solved"
+                            }
+                        }.decodeSingle()
+
+                    val solution = TaskSolutionsInsert(
+                        user_id = CurrentUser.userData!!.id,
+                        task_id = _id.value.toInt(),
+                        language_id = _selectedLanguage.value!!.id,
+                        code = _textFieldValue.value.text,
+                        current_status = solutionStatus.id,
+                        start_time = startTime,
+                        end_time = currentTime()
+                    )
+
+                    Constants.supabase.from("task_solutions").update(
+                        solution
+                    ) {
+                        filter {
+                            TaskSolutions::user_id eq CurrentUser.userData!!.id
+                            TaskSolutions::task_id eq _id.value
+                        }
+                    }
+                }
+                catch (e: Exception){
+                    Log.e("supabase", "endTask: $e")
+                }
+            }
+        }
+        _navigationStateFlow.value = Routes.Main
     }
 
     init {
@@ -109,8 +162,9 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                         options.add(item.language_name)
                     }
 
-                    if (_status.value == "started") {
-                        val columns = Columns.raw("""
+                    try {
+                        val columns = Columns.raw(
+                            """
                             id,
                             user_id,
                             task_id,
@@ -125,8 +179,8 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                             ),
                             start_time,
                             end_time
-                        """.trimIndent())
-
+                        """.trimIndent()
+                        )
                         val solution: TaskSolutions = Constants.supabase.from("task_solutions")
                             .select(
                                 columns = columns
@@ -136,7 +190,7 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                                     TaskSolutions::task_id eq _id.value
                                 }
                             }.decodeSingle()
-
+                        startTime = solution.start_time!!
                         setSelectedLanguage(solution.language_id.language_name)
                         changeCode(
                             _textFieldValue.value.copy(
@@ -148,6 +202,30 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                                 )
                             )
                         )
+                    }
+                    catch (e: Exception) {
+                        Log.e("supabase", "get solution error $e")
+                    }
+
+
+                    while (true) {
+                        if (_status.value == "solved") break
+                        Thread.sleep(5000)
+                        if (_status.value == "solved") break
+                        val solution = TaskSolutionsUpdate(
+                            _selectedLanguage.value!!.id,
+                            _textFieldValue.value.text,
+                            currentTime()
+                        )
+                        if (_status.value == "solved") break
+                        Constants.supabase.from("task_solutions").update(
+                            solution
+                        ) {
+                            filter {
+                                TaskSolutions::user_id eq CurrentUser.userData!!.id
+                                TaskSolutions::task_id eq _id.value
+                            }
+                        }
                     }
                 }
                 catch (e: Exception) {

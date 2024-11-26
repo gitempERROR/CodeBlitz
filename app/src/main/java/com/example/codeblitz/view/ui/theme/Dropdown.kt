@@ -229,18 +229,10 @@ fun CustomDropDownMenuColors(
             CodeBlitzTheme.colors.background,
             CodeBlitzTheme.colors.onBackground,
             CodeBlitzTheme.colors.secondaryContainer
-        ),
-        ColorScheme(
-            "Темнее",
-            CodeBlitzTheme.colors.primary,
-            CodeBlitzTheme.colors.tertiary,
-            CodeBlitzTheme.colors.secondary,
-            CodeBlitzTheme.colors.background,
-            CodeBlitzTheme.colors.onBackground,
-            CodeBlitzTheme.colors.secondaryContainer)),
-    onOptionSelected: (String) -> Unit = {},
+        )),
+    onOptionSelected: (ColorScheme) -> Unit = {},
     backgroundColor: Color = CodeBlitzTheme.colors.onBackground,
-    selectedScheme: MutableState<ColorScheme> = mutableStateOf(
+    selectedScheme: MutableState<ColorScheme?> = mutableStateOf(
         ColorScheme("Темная",
             CodeBlitzTheme.colors.primary,
             CodeBlitzTheme.colors.tertiary,
@@ -283,7 +275,8 @@ fun CustomDropDownMenuColors(
                             selectedScheme.value = options[index]
                             expanded = false
                             options.removeAt(index)
-                            options.add(0, selectedScheme.value)
+                            selectedScheme.value?.let { options.add(0, it) }
+                            onOptionSelected(colorScheme)
                         }
                         .padding(top = (5 / ScreenDimensions.getScreenRatio() / ScreenDimensions.getScreenRatio()).dp),
                     colorScheme = colorScheme,
@@ -299,7 +292,7 @@ fun CustomDropDownMenuColors(
 @Composable
 fun SelectedElement(
     modifier: Modifier = Modifier,
-    selectedScheme: MutableState<ColorScheme>,
+    selectedScheme: MutableState<ColorScheme?>,
     backgroundColor: Color = CodeBlitzTheme.colors.onBackground
 ) {
     Box(
@@ -311,64 +304,66 @@ fun SelectedElement(
                 shape = RoundedCornerShape(10.dp)
             )
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth().height(35.dp).padding(start = (120 * ScreenDimensions.getScreenRatio()).dp, bottom = 6.dp)
-        ) {
-            ColorIcon(
-                color = selectedScheme.value.background
+        if (selectedScheme.value != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth().height(35.dp).padding(start = (140 * ScreenDimensions.getScreenRatio()).dp, bottom = 6.dp)
+            ) {
+                ColorIcon(
+                    color = selectedScheme.value!!.background
+                )
+                Spacer(
+                    modifier = Modifier.width((5 * ScreenDimensions.getScreenRatio()).dp)
+                )
+                ColorIcon(
+                    color = selectedScheme.value!!.primary
+                )
+                Spacer(
+                    modifier = Modifier.width((5 * ScreenDimensions.getScreenRatio() * ScreenDimensions.getScreenRatio()).dp)
+                )
+                ColorIcon(
+                    color = selectedScheme.value!!.secondaryContainer
+                )
+                Spacer(
+                    modifier = Modifier.width((5 * ScreenDimensions.getScreenRatio() * ScreenDimensions.getScreenRatio()).dp)
+                )
+                ColorIcon(
+                    color = selectedScheme.value!!.tertiary
+                )
+                Spacer(
+                    modifier = Modifier.width((5 * ScreenDimensions.getScreenRatio() * ScreenDimensions.getScreenRatio()).dp)
+                )
+                ColorIcon(
+                    color = selectedScheme.value!!.secondary
+                )
+                Spacer(
+                    modifier = Modifier.width((5 * ScreenDimensions.getScreenRatio() * ScreenDimensions.getScreenRatio()).dp)
+                )
+                ColorIcon(
+                    color = selectedScheme.value!!.onBackground
+                )
+            }
+            Text(
+                text = selectedScheme.value!!.name,
+                style = CodeBlitzTheme.typography.displaySmall,
+                color = CodeBlitzTheme.colors.tertiary,
+                modifier = Modifier.height(35.dp).padding(start = 10.dp)
             )
-            Spacer(
-                modifier = Modifier.width((5 * ScreenDimensions.getScreenRatio()).dp)
-            )
-            ColorIcon(
-                color = selectedScheme.value.primary
-            )
-            Spacer(
-                modifier = Modifier.width((5 * ScreenDimensions.getScreenRatio() * ScreenDimensions.getScreenRatio()).dp)
-            )
-            ColorIcon(
-                color = selectedScheme.value.secondaryContainer
-            )
-            Spacer(
-                modifier = Modifier.width((5 * ScreenDimensions.getScreenRatio() * ScreenDimensions.getScreenRatio()).dp)
-            )
-            ColorIcon(
-                color = selectedScheme.value.tertiary
-            )
-            Spacer(
-                modifier = Modifier.width((5 * ScreenDimensions.getScreenRatio() * ScreenDimensions.getScreenRatio()).dp)
-            )
-            ColorIcon(
-                color = selectedScheme.value.secondary
-            )
-            Spacer(
-                modifier = Modifier.width((5 * ScreenDimensions.getScreenRatio() * ScreenDimensions.getScreenRatio()).dp)
-            )
-            ColorIcon(
-                color = selectedScheme.value.onBackground
-            )
-        }
-        Text(
-            text = selectedScheme.value.name,
-            style = CodeBlitzTheme.typography.displaySmall,
-            color = CodeBlitzTheme.colors.tertiary,
-            modifier = Modifier.height(35.dp).padding(start = 10.dp)
-        )
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(bottom = 10.dp, end = 10.dp)
-                .height(26.dp)
-                .width(26.dp)
-        ) {
-            Icon(
-                imageVector = ImageVector.vectorResource(R.drawable.ellipsis),
-                contentDescription = "",
-                tint = CodeBlitzTheme.colors.secondary,
+            Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .zIndex(4f)
-            )
+                    .align(Alignment.CenterEnd)
+                    .padding(bottom = 10.dp, end = 10.dp)
+                    .height(26.dp)
+                    .width(26.dp)
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.ellipsis),
+                    contentDescription = "",
+                    tint = CodeBlitzTheme.colors.secondary,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .zIndex(4f)
+                )
+            }
         }
     }
 }
@@ -378,7 +373,7 @@ fun SelectedElement(
 fun DropDownElement(
     modifier: Modifier = Modifier,
     colorScheme: ColorScheme,
-    selectedScheme: MutableState<ColorScheme>,
+    selectedScheme: MutableState<ColorScheme?>,
     backgroundColor: Color = CodeBlitzTheme.colors.onBackground
 ) {
     Box(
@@ -391,7 +386,7 @@ fun DropDownElement(
         ) {
             val color = CodeBlitzTheme.colors.secondary
             Row(
-                modifier = Modifier.fillMaxSize().padding(start = (120 * ScreenDimensions.getScreenRatio()).dp, bottom = 10.dp)
+                modifier = Modifier.fillMaxSize().padding(start = (140 * ScreenDimensions.getScreenRatio()).dp, bottom = 10.dp)
             ) {
                 ColorIcon(
                     color = colorScheme.background
@@ -433,7 +428,7 @@ fun DropDownElement(
                 color = CodeBlitzTheme.colors.tertiary,
                 modifier = Modifier.height(35.dp).padding(start = 10.dp)
             )
-            if (colorScheme.name == selectedScheme.value.name) {
+            if (colorScheme.name == selectedScheme.value!!.name) {
                 Box(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)

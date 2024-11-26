@@ -43,7 +43,13 @@ class MainViewModel @Inject constructor() : BaseViewModel() {
                 _tasks.value.forEachIndexed {id, element ->
                     val columns = Columns.raw("""
                         id,
-                        user_id,
+                        user_id (
+                          id,
+                          firstname,
+                          surname,
+                          nickname,
+                          role_id
+                        ),
                         task_id,
                         language_id (
                           id,

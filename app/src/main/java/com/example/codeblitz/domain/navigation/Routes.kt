@@ -15,7 +15,7 @@ sealed class Routes(val route: String) {
 
     data object Settings    : Routes("Settings")
 
-    data object SolvedTask  : Routes("SolvedTask")
+    data object SolvedTask  : Routes("SolvedTask/{title}/{nickname}/{date}/{lang}/{time}/{code}/{desc}")
 
     data object Leaderboard : Routes("Leaderboard")
 }

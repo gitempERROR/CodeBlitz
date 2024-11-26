@@ -46,6 +46,7 @@ class LoginViewModel @Inject constructor() : BaseViewModel() {
                 }
                 getUserData()
                 _navigationStateFlow.value = Routes.Main
+                setTheme()
             }
             catch (e: Exception) {
                 Log.e("auth", "$e")

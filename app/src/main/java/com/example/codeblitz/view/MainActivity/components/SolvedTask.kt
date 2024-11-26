@@ -51,7 +51,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.SolvedTaskViewModel
 import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.domain.utils.ScreenDimensions
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
@@ -65,39 +68,17 @@ import com.wakaztahir.codeeditor.highlight.theme.CodeThemeType
 import com.wakaztahir.codeeditor.highlight.utils.parseCodeAsAnnotatedString
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun SolvedTask() {
+fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltViewModel()) {
     val configuration = LocalConfiguration.current
     val vertical = remember {
         derivedStateOf { configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
     }
 
-    val language = CodeLang.Python
-
-    val parser = remember { PrettifyParser() }
-    val themeState by remember { mutableStateOf(CodeThemeType.Monokai) }
-    val theme = remember(themeState) { themeState.theme() }
-
-    val options = mutableListOf("Python", "GO")
-    val selectedText = remember { mutableStateOf(options[0]) }
-
-    val code = """
-        width = float(input("Введите ширину прямоугольника: "))
-        height = float(input("Введите высоту прямоугольника: "))
-        area = width * height
-        print(f"Площадь прямоугольника: {area}")
-    """.trimIndent()
-
     var textFieldValue by remember {
         mutableStateOf(
             TextFieldValue(
-                annotatedString = parseCodeAsAnnotatedString(
-                    parser = parser,
-                    theme = theme,
-                    lang = language,
-                    code = code
-                )
+                annotatedString = viewModel.code
             )
         )
     }
@@ -186,7 +167,7 @@ fun SolvedTask() {
                     modifier = Modifier
                         .align(Alignment.TopStart)
                         .padding(horizontal = 20.dp, vertical = (15.5).dp),
-                    text = "Задание",
+                    text = viewModel.title,
                     textAlign = TextAlign.Center,
                     style = CodeBlitzTheme.typography.titleMedium,
                     maxLines = 2,
@@ -203,7 +184,7 @@ fun SolvedTask() {
                 )
                 if(taskOpened) {
                     Text(
-                        text = "Empdaty EmpdatyEmpdatyEmpdaty EmpdatyEmpdaty Empdaty v Empdaty Empdaty EmpdatyEmpdaty  Empdaty EmpdatyEmpdatyEmpdatyv Empdatyv  vv EmpdatyEmpdaty EmpdatyEmp Empdaty EmpdatyEmpdatyEmpdaty EmpdatyEmpdaty Empdaty v Empdaty Empdaty EmpdatyEmpdaty  Empdaty EmpdatyEmpdatyEmpdatyv Empdatyv  vv EmpdatyEmpdaty EmpdatyEmpdaty Empdaty Empdaty EmpdatyEmpdatyEmpdaty EmpdatyEmpdaty Empdaty v Empdaty Empdaty EmpdatyEmpdaty  Empdaty EmpdatyEmpdatyEmpdatyv Empdatyv  vv EmpdatyEmpdaty EmpdatyEmpdaty Empdaty  Empdaty EmpdatyEmpdatyEmpdaty EmpdatyEmpdaty Empdaty v Empdaty Empdaty EmpdatyEmpdaty  Empdaty EmpdatyEmpdatyEmpdatyv Empdatyv  vv EmpdatyEmpdaty EmpdatyEmpdaty Empdaty Empdaty EmpdatyEmpdatyEmpdaty EmpdatyEmpdaty Empdaty v Empdaty Empdaty EmpdatyEmpdaty  Empdaty EmpdatyEmpdatyEmpdatyv Empdatyv  vv EmpdatyEmpdaty EmpdatyEmpdaty Empdatydaty Empdaty",
+                        text = viewModel.desc,
                         style = CodeBlitzTheme.typography.titleSmall,
                         color = CodeBlitzTheme.colors.tertiary,
                         modifier = Modifier
@@ -269,7 +250,7 @@ fun SolvedTask() {
                     .padding(horizontal = 5.dp)
             ) {
                 Text(
-                    text = "Empty",
+                    text = viewModel.nickname,
                     modifier = Modifier
                         .padding(horizontal = 5.dp, vertical = 20.dp)
                         .align(Alignment.TopStart)
@@ -283,7 +264,7 @@ fun SolvedTask() {
                     color = CodeBlitzTheme.colors.tertiary
                 )
                 Text(
-                    text = "Empty",
+                    text = viewModel.lang,
                     modifier = Modifier
                         .padding(horizontal = 5.dp, vertical = 20.dp)
                         .align(Alignment.TopEnd)
@@ -298,7 +279,7 @@ fun SolvedTask() {
                     textAlign = TextAlign.Right
                 )
                 Text(
-                    text = "Empty",
+                    text = viewModel.date,
                     modifier = Modifier
                         .padding(horizontal = 5.dp, vertical = 10.dp)
                         .align(Alignment.BottomStart)
@@ -312,7 +293,7 @@ fun SolvedTask() {
                     color = CodeBlitzTheme.colors.tertiary
                 )
                 Text(
-                    text = "Empty",
+                    text = viewModel.time,
                     modifier = Modifier
                         .padding(horizontal = 5.dp, vertical = 10.dp)
                         .align(Alignment.BottomEnd)
@@ -345,16 +326,7 @@ fun SolvedTask() {
                 val interactionSource = remember { MutableInteractionSource() }
                 BasicTextField(
                     value = textFieldValue,
-                    onValueChange = {
-                        textFieldValue = it.copy(
-                            annotatedString = parseCodeAsAnnotatedString(
-                                parser = parser,
-                                theme = theme,
-                                lang = language,
-                                code = it.text
-                            )
-                        )
-                    },
+                    onValueChange = {},
                     textStyle = TextStyle(
                         fontFamily = JetBrains,
                         fontWeight = FontWeight.Normal,

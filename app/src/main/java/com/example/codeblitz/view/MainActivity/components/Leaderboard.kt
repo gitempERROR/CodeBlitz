@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,7 +25,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.LeaderboardViewModel
+import com.example.codeblitz.domain.utils.CurrentUser
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.CustomDropDownMenu
 import com.example.codeblitz.view.ui.theme.CustomDropDownMenuColors
@@ -31,15 +37,15 @@ import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
 @Composable
-fun Leaderboard() {
-    val optionsTask = mutableListOf("Задание 1", "Задание 2")
-    val selectedTask = remember { mutableStateOf(optionsTask[0]) }
+fun Leaderboard(controller: NavController, viewModel: LeaderboardViewModel = hiltViewModel()) {
+    LaunchedEffect(
+        viewModel.navigationStateFlow
+    ) {
+        viewModel.navigationStateFlow.collect { event ->
+            event?.let { controller.navigate(event.route) }
+        }
+    }
 
-    val optionsDate = mutableListOf("01.10.2024", "02.10.2024")
-    val selectedDate = remember { mutableStateOf(optionsDate[0]) }
-
-    val optionsLang = mutableListOf("Python", "GO")
-    val selectedLang = remember { mutableStateOf(optionsLang[0]) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -67,7 +73,8 @@ fun Leaderboard() {
                     .align(Alignment.CenterStart),
                 iconId = R.drawable.user,
                 modifierIcon = Modifier.padding(5.dp),
-                tint = CodeBlitzTheme.colors.primary
+                tint = CodeBlitzTheme.colors.primary,
+                onClick = { viewModel.navigateToProfile() }
             )
             Text(
                 text = "Таблица лидеров",
@@ -86,7 +93,8 @@ fun Leaderboard() {
                     containerColor = CodeBlitzTheme.colors.onBackground
                 ),
                 tint = CodeBlitzTheme.colors.primary,
-                iconId = R.drawable.pointerbackthin
+                iconId = R.drawable.pointerbackthin,
+                onClick = { viewModel.navigateToMain() }
             )
         }
         Spacer(
@@ -107,26 +115,29 @@ fun Leaderboard() {
             CustomDropDownMenu(
                 modifier = Modifier
                     .align(Alignment.TopEnd),
-                selectedText = selectedTask,
-                options = optionsTask,
+                selectedText = viewModel.selectedOptionTask,
+                options = viewModel.optionsTask,
                 backgroundColor = CodeBlitzTheme.colors.background,
-                dividerColor = CodeBlitzTheme.colors.onBackground
+                dividerColor = CodeBlitzTheme.colors.onBackground,
+                onOptionSelected = { viewModel.updateFilters() }
             )
             CustomDropDownMenu(
                 modifier = Modifier
                     .align(Alignment.BottomStart),
-                selectedText = selectedDate,
-                options = optionsDate,
+                selectedText = viewModel.selectedOptionDate,
+                options = viewModel.optionsDate,
                 backgroundColor = CodeBlitzTheme.colors.background,
-                dividerColor = CodeBlitzTheme.colors.onBackground
+                dividerColor = CodeBlitzTheme.colors.onBackground,
+                onOptionSelected = { viewModel.updateFilters() }
             )
             CustomDropDownMenu(
                 modifier = Modifier
                     .align(Alignment.BottomEnd),
-                selectedText = selectedLang,
-                options = optionsLang,
+                selectedText = viewModel.selectedOptionLang,
+                options = viewModel.optionsLang,
                 backgroundColor = CodeBlitzTheme.colors.background,
-                dividerColor = CodeBlitzTheme.colors.onBackground
+                dividerColor = CodeBlitzTheme.colors.onBackground,
+                onOptionSelected = { viewModel.updateFilters() }
             )
         }
         Spacer(
@@ -147,8 +158,15 @@ fun Leaderboard() {
                     top = 20.dp
                 )
             ) {
-                items(125){ item ->
-                    LeaderBoardElement()
+                items(viewModel.solutionsList.value){ item ->
+                    LeaderBoardElement(
+                        place = item.place,
+                        time = item.spent_time,
+                        username = item.user_id.nickname,
+                        isUser = (item.user_id.nickname == CurrentUser.userData!!.nickname),
+                        item = item,
+                        controller = controller
+                    )
                     Spacer(
                         modifier = Modifier.height(15.dp)
                     )

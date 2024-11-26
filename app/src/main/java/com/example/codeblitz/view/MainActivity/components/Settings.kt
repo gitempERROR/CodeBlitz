@@ -13,21 +13,33 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.SettingsViewModel
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.CustomDropDownMenuColors
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
-@Preview
 @Composable
-fun Settings() {
+fun Settings(controller: NavController, viewModel: SettingsViewModel = hiltViewModel()) {
+
+    LaunchedEffect(
+        viewModel.navigationStateFlow
+    ) {
+        viewModel.navigationStateFlow.collect { event ->
+            event?.let { controller.navigate(event.route) }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -55,7 +67,8 @@ fun Settings() {
                     .align(Alignment.CenterStart),
                 iconId = R.drawable.user,
                 modifierIcon = Modifier.padding(5.dp),
-                tint = CodeBlitzTheme.colors.primary
+                tint = CodeBlitzTheme.colors.primary,
+                onClick = { viewModel.navigateToProfile() }
             )
             Text(
                 text = "Настройки",
@@ -73,7 +86,8 @@ fun Settings() {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = CodeBlitzTheme.colors.onBackground
                 ),
-                tint = CodeBlitzTheme.colors.primary
+                tint = CodeBlitzTheme.colors.primary,
+                onClick = { viewModel.navigateToMain() }
             )
         }
         Spacer(
@@ -94,7 +108,10 @@ fun Settings() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 35.dp),
-            backgroundColor = CodeBlitzTheme.colors.background
+            backgroundColor = CodeBlitzTheme.colors.background,
+            options = viewModel.options,
+            selectedScheme = viewModel.selectedOption,
+            onOptionSelected = { newColorScheme -> viewModel.changeTheme(newColorScheme) }
         )
     }
 }

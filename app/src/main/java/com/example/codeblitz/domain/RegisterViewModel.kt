@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import android.util.Patterns.EMAIL_ADDRESS
+import com.example.codeblitz.domain.utils.CurrentUser
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor() : BaseViewModel() {
@@ -92,7 +93,9 @@ class RegisterViewModel @Inject constructor() : BaseViewModel() {
 
                         Constants.supabase.from("user_settings").insert(newUserSettings)
 
+                        getUserData()
                         navigateToMain()
+                        setTheme()
                     }
                     catch (e: Exception) {
                         Log.e("register", "$e")
@@ -100,5 +103,20 @@ class RegisterViewModel @Inject constructor() : BaseViewModel() {
                     }
                 }
             }
+    }
+
+    private suspend fun getUserData(){
+        try {
+            val userId = Constants.supabase.auth.currentUserOrNull()!!.id
+            val userData: UserData = Constants.supabase.from("user_data").select {
+                filter {
+                    UserData::id eq userId
+                }
+            }.decodeSingle()
+            CurrentUser.setUserData(userData)
+        }
+        catch (e: Exception) {
+            Log.e("supabase", "getUserData: $e")
+        }
     }
 }

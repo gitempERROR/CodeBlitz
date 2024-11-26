@@ -41,13 +41,13 @@ fun NavController(controller: NavHostController) {
             Editor(controller)
         }
         composable(Routes.Settings.route) {
-            Settings()
+            Settings(controller)
         }
         composable(Routes.Leaderboard.route) {
-            Leaderboard()
+            Leaderboard(controller)
         }
         composable(Routes.SolvedTask.route) {
-            SolvedTask()
+            SolvedTask(controller)
         }
     }
 }

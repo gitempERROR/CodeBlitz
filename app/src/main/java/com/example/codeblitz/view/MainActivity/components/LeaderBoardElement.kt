@@ -1,6 +1,7 @@
 package com.example.codeblitz.view.MainActivity.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.codeblitz.domain.navigation.Routes
+import com.example.codeblitz.model.TaskSolutions
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 
 @Composable
@@ -23,7 +27,9 @@ fun LeaderBoardElement(
     place: Int = 0,
     time: Float = 0f,
     username: String = "Empty",
-    isUser: Boolean = false
+    isUser: Boolean = false,
+    item: TaskSolutions,
+    controller: NavController
 ) {
     Box(
        modifier = Modifier
@@ -33,6 +39,17 @@ fun LeaderBoardElement(
                color = if (isUser) CodeBlitzTheme.colors.secondary else CodeBlitzTheme.colors.primary,
                shape = RoundedCornerShape(10.dp)
            )
+           .clickable {
+               controller.navigate("SolvedTask"
+                       +"/${item.task_title}"
+                       +"/${item.user_id.nickname}"
+                       +"/${item.date}"
+                       +"/${item.language_id.language_name}"
+                       +"/${item.spent_time}"
+                       +"/${item.code}"
+                       +"/${item.task_desc}"
+               )
+           }
     ) {
         Box(
             modifier = Modifier

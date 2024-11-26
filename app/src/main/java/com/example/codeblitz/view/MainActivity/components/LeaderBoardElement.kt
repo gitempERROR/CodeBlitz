@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.codeblitz.domain.navigation.Routes
+import com.example.codeblitz.domain.utils.CurrentUser
 import com.example.codeblitz.model.TaskSolutions
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 
@@ -32,24 +33,26 @@ fun LeaderBoardElement(
     controller: NavController
 ) {
     Box(
-       modifier = Modifier
-           .height(75.dp)
-           .fillMaxWidth()
-           .background(
-               color = if (isUser) CodeBlitzTheme.colors.secondary else CodeBlitzTheme.colors.primary,
-               shape = RoundedCornerShape(10.dp)
-           )
-           .clickable {
-               controller.navigate("SolvedTask"
-                       +"/${item.task_title}"
-                       +"/${item.user_id.nickname}"
-                       +"/${item.date}"
-                       +"/${item.language_id.language_name}"
-                       +"/${item.spent_time}"
-                       +"/${item.code}"
-                       +"/${item.task_desc}"
-               )
-           }
+        modifier = Modifier
+            .height(75.dp)
+            .fillMaxWidth()
+            .background(
+                color = if (isUser) CodeBlitzTheme.colors.secondary else CodeBlitzTheme.colors.primary,
+                shape = RoundedCornerShape(10.dp)
+            )
+            .clickable {
+                controller.navigate(
+                    "SolvedTask"
+                            + "/${item.task_title}"
+                            + "/${item.user_id.nickname}"
+                            + "/${item.date}"
+                            + "/${item.language_id.language_name}"
+                            + "/${item.spent_time}"
+                            + "/${item.code}"
+                            + "/${item.task_desc}"
+                            + "/${item.id}"
+                )
+            }
     ) {
         Box(
             modifier = Modifier
@@ -69,23 +72,35 @@ fun LeaderBoardElement(
                         .padding(horizontal = 10.dp)
                         .align(Alignment.CenterVertically)
                 ) {
-                    Text(
-                        text = "$place место",
-                        style = CodeBlitzTheme.typography.titleSmall,
-                        color = CodeBlitzTheme.colors.secondary
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .padding(horizontal = 5.dp)
-                            .background(color = CodeBlitzTheme.colors.background)
-                    )
+                    if (!CurrentUser.isAdmin) {
+                        Text(
+                            text = "$place место",
+                            style = CodeBlitzTheme.typography.titleSmall,
+                            color = CodeBlitzTheme.colors.secondary
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(1.dp)
+                                .padding(horizontal = 5.dp)
+                                .background(color = CodeBlitzTheme.colors.background)
+                        )
+                    }
+                    if (CurrentUser.isAdmin) {
+                        Spacer(
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                     Text(
                         text = "$time минут",
                         style = CodeBlitzTheme.typography.titleSmall,
                         color = CodeBlitzTheme.colors.primary
                     )
+                    if (CurrentUser.isAdmin) {
+                        Spacer(
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
                 }
                 if (isUser) {
                     Box(
@@ -111,8 +126,7 @@ fun LeaderBoardElement(
                             )
                         }
                     }
-                }
-                else {
+                } else {
                     Text(
                         text = username,
                         style = CodeBlitzTheme.typography.titleSmall,

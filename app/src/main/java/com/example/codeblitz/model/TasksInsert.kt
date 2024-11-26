@@ -3,7 +3,7 @@ package com.example.codeblitz.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserRoles(
-    val id: Int,
-    val role_name: String
+data class TasksInsert(
+    val day_id: Int,
+    val task_description: String
 )

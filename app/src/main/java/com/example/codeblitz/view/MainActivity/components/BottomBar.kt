@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
@@ -30,8 +29,8 @@ import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 @Composable
 fun BottomBar(
     controller: NavController
-){
-    Box (
+) {
+    Box(
         modifier = Modifier.fillMaxWidth()
     ) {
         TransparentIconButtonCodeBlitz(
@@ -71,7 +70,7 @@ fun BottomBar(
                 modifier = Modifier
                     .background(CodeBlitzTheme.colors.background)
                     .height(65.dp)
-            ){
+            ) {
                 Spacer(
                     modifier = Modifier.weight(0.4f)
                 )

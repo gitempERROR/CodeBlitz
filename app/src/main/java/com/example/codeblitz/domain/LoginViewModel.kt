@@ -10,19 +10,19 @@ import com.example.codeblitz.domain.utils.Constants
 import com.example.codeblitz.domain.utils.CurrentUser
 import com.example.codeblitz.model.LoginData
 import com.example.codeblitz.model.UserData
+import com.example.codeblitz.model.UserRoles
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.postgrest.from
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor() : BaseViewModel() {
     private val _loginData: MutableState<LoginData> = mutableStateOf(LoginData("", ""))
-    private val _isButtonEnabled = derivedStateOf { _loginData.value.login.isNotBlank() && _loginData.value.password.isNotBlank() }
+    private val _isButtonEnabled =
+        derivedStateOf { _loginData.value.login.isNotBlank() && _loginData.value.password.isNotBlank() }
     private var _isError = mutableStateOf(false)
 
     val loginData: LoginData get() = _loginData.value
@@ -37,7 +37,7 @@ class LoginViewModel @Inject constructor() : BaseViewModel() {
         _navigationStateFlow.value = Routes.Register
     }
 
-    fun login(){
+    fun login() {
         viewModelScope.launch {
             try {
                 Constants.supabase.auth.signInWith(Email) {
@@ -47,15 +47,14 @@ class LoginViewModel @Inject constructor() : BaseViewModel() {
                 getUserData()
                 _navigationStateFlow.value = Routes.Main
                 setTheme()
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.e("auth", "$e")
                 _isError.value = true
             }
         }
     }
 
-    private suspend fun getUserData(){
+    private suspend fun getUserData() {
         try {
             val userId = Constants.supabase.auth.currentUserOrNull()!!.id
             val userData: UserData = Constants.supabase.from("user_data").select {
@@ -63,9 +62,15 @@ class LoginViewModel @Inject constructor() : BaseViewModel() {
                     UserData::id eq userId
                 }
             }.decodeSingle()
+            val roleAdmin: UserRoles = Constants.supabase.from("user_roles")
+                .select() {
+                    filter {
+                        UserRoles::role_name eq "admin"
+                    }
+                }.decodeSingle()
             CurrentUser.setUserData(userData)
-        }
-        catch (e: Exception) {
+            CurrentUser.setRole(roleAdmin.id == userData.role_id)
+        } catch (e: Exception) {
             Log.e("supabase", "getUserData: $e")
         }
     }

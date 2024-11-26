@@ -11,24 +11,30 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.codeblitz.R
 import com.example.codeblitz.domain.MainViewModel
 import com.example.codeblitz.domain.navigation.Routes
+import com.example.codeblitz.domain.utils.CurrentUser
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
@@ -46,8 +52,7 @@ fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) 
                         controller.navigate(
                             "Profile" + "/${Routes.Main.route}"
                         )
-                    }
-                    catch (e: Exception){
+                    } catch (e: Exception) {
                         Log.e("navigation to profile", e.toString())
                     }
                 }
@@ -86,33 +91,65 @@ fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) 
                 onClick = { viewModel.navigateToProfile() }
             )
             Text(
-                text = "Задания на сегодня",
+                text = if (CurrentUser.isAdmin) "Задания на завтра" else "Задания на сегодня",
                 textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.Center).padding(horizontal = 110.dp),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 110.dp),
                 style = CodeBlitzTheme.typography.titleMedium,
                 maxLines = 2,
                 color = CodeBlitzTheme.colors.tertiary
             )
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.lightning),
-                modifier = Modifier.align(Alignment.CenterEnd).padding(end = 25.dp, top = 10.dp),
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 25.dp, top = 10.dp),
                 tint = CodeBlitzTheme.colors.secondary,
                 contentDescription = ""
             )
         }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 25.dp)
-        ) {
-            items(viewModel.tasks) { task ->
-                TaskElement(
-                    controller = controller,
-                    title = "Задание " + task.day_task_id.toString(),
-                    desc = task.task_description,
-                    id = task.id,
-                    status = task.task_status
-                )
+        if (CurrentUser.isAdmin) {
+            var count: Int by remember { mutableIntStateOf(0) }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 25.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                count = 0
+                viewModel.tasks.forEach { task ->
+                    TaskElement(
+                        controller = controller,
+                        title = "Задание " + task.day_task_id.toString(),
+                        desc = task.task_description,
+                        id = task.id,
+                        status = task.task_status
+                    )
+                    count += 1
+                }
+                while (count < 2) {
+                    EmptyTaskElement(
+                        controller = controller
+                    )
+                    count += 1
+                }
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 25.dp)
+            ) {
+                items(viewModel.tasks) { task ->
+                    TaskElement(
+                        controller = controller,
+                        title = "Задание " + task.day_task_id.toString(),
+                        desc = task.task_description,
+                        id = task.id,
+                        status = task.task_status
+                    )
+                }
             }
         }
     }

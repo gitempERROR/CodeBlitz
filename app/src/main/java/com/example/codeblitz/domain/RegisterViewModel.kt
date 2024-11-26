@@ -1,12 +1,14 @@
 package com.example.codeblitz.domain
 
 import android.util.Log
+import android.util.Patterns.EMAIL_ADDRESS
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.domain.utils.Constants
+import com.example.codeblitz.domain.utils.CurrentUser
 import com.example.codeblitz.model.LoginData
 import com.example.codeblitz.model.UserData
 import com.example.codeblitz.model.UserRoles
@@ -18,8 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import android.util.Patterns.EMAIL_ADDRESS
-import com.example.codeblitz.domain.utils.CurrentUser
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor() : BaseViewModel() {
@@ -60,52 +60,51 @@ class RegisterViewModel @Inject constructor() : BaseViewModel() {
     }
 
     fun register() {
-            viewModelScope.launch {
-                withContext(Dispatchers.IO) {
-                    Constants.supabase.auth.signUpWith(Email) {
-                        email = registerData.login
-                        password = registerData.password
-                    }
-                    val role: UserRoles
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                Constants.supabase.auth.signUpWith(Email) {
+                    email = registerData.login
+                    password = registerData.password
+                }
+                val role: UserRoles
 
-                    try {
-                        role = Constants.supabase.from("user_roles")
-                            .select() {
-                                filter {
-                                    UserRoles::role_name eq "user"
-                                }
-                            }.decodeSingle()
-                        val userId: String = Constants.supabase.auth.currentUserOrNull()!!.id
+                try {
+                    role = Constants.supabase.from("user_roles")
+                        .select() {
+                            filter {
+                                UserRoles::role_name eq "user"
+                            }
+                        }.decodeSingle()
+                    val userId: String = Constants.supabase.auth.currentUserOrNull()!!.id
 
-                        val newUser = UserData(
-                            userId,
-                            firstname = "",
-                            surname = "",
-                            nickname = "",
-                            role_id = role.id
-                        )
+                    val newUser = UserData(
+                        userId,
+                        firstname = "",
+                        surname = "",
+                        nickname = "",
+                        role_id = role.id
+                    )
 
-                        Constants.supabase.from("user_data").insert(
-                            newUser
-                        )
+                    Constants.supabase.from("user_data").insert(
+                        newUser
+                    )
 
-                        val newUserSettings = mapOf("user_id" to userId)
+                    val newUserSettings = mapOf("user_id" to userId)
 
-                        Constants.supabase.from("user_settings").insert(newUserSettings)
+                    Constants.supabase.from("user_settings").insert(newUserSettings)
 
-                        getUserData()
-                        navigateToMain()
-                        setTheme()
-                    }
-                    catch (e: Exception) {
-                        Log.e("register", "$e")
-                        _isError.value = true
-                    }
+                    getUserData()
+                    navigateToMain()
+                    setTheme()
+                } catch (e: Exception) {
+                    Log.e("register", "$e")
+                    _isError.value = true
                 }
             }
+        }
     }
 
-    private suspend fun getUserData(){
+    private suspend fun getUserData() {
         try {
             val userId = Constants.supabase.auth.currentUserOrNull()!!.id
             val userData: UserData = Constants.supabase.from("user_data").select {
@@ -113,9 +112,15 @@ class RegisterViewModel @Inject constructor() : BaseViewModel() {
                     UserData::id eq userId
                 }
             }.decodeSingle()
+            val roleAdmin: UserRoles = Constants.supabase.from("user_roles")
+                .select() {
+                    filter {
+                        UserRoles::role_name eq "admin"
+                    }
+                }.decodeSingle()
             CurrentUser.setUserData(userData)
-        }
-        catch (e: Exception) {
+            CurrentUser.setRole(roleAdmin.id == userData.role_id)
+        } catch (e: Exception) {
             Log.e("supabase", "getUserData: $e")
         }
     }

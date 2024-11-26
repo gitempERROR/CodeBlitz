@@ -92,7 +92,8 @@ class SettingsViewModel @Inject constructor() : BaseViewModel() {
                             SettingsData::user_id eq CurrentUser.userData!!.id
                         }
                     }.decodeSingleOrNull()
-                _selectedTheme.value = if (settings!!.selected_theme != null) _themeList.value.find { it.id == settings.selected_theme } else _themeList.value[0]
+                _selectedTheme.value =
+                    if (settings!!.selected_theme != null) _themeList.value.find { it.id == settings.selected_theme } else _themeList.value[0]
                 _selectedTheme.value?.let { setOptions(it) }
             }
         }

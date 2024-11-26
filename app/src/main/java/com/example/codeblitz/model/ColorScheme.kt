@@ -3,7 +3,7 @@ package com.example.codeblitz.model
 import androidx.compose.ui.graphics.Color
 
 
-data class ColorScheme (
+data class ColorScheme(
     val name: String,
     val primary: Color,
     val tertiary: Color,

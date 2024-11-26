@@ -45,7 +45,14 @@ object CurrentUser {
     private var _userData: MutableState<UserData?> = mutableStateOf(null)
     val userData by _userData
 
+    private var _isAdmin: MutableState<Boolean> = mutableStateOf(false)
+    val isAdmin by _isAdmin
+
     fun setUserData(userData: UserData) {
         _userData.value = userData
+    }
+
+    fun setRole(isAdmin: Boolean) {
+        _isAdmin.value = isAdmin
     }
 }

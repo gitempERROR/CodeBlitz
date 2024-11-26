@@ -28,7 +28,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,7 +35,6 @@ import com.example.codeblitz.R
 import com.example.codeblitz.domain.utils.ScreenDimensions
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun TextFieldCodeBlitz(
     modifier: Modifier = Modifier,
@@ -49,21 +47,29 @@ fun TextFieldCodeBlitz(
     isPassword: Boolean = false,
     isSettings: Boolean = false,
     style: TextStyle = CodeBlitzTheme.typography.titleSmall,
-    iconOnClick: () -> Unit = {}
+    iconOnClick: () -> Unit = {},
+    singleLine: Boolean = true,
+    addLabel: Boolean = true
 ) {
     Column(
         modifier = modifier
     ) {
+        // Переменная для отображения текста в режиме пароля
         var shown by remember { mutableStateOf(if (isPassword) false else null) }
-        var isFocused by remember { mutableStateOf(false)}
-        Text(
-            text = label,
-            style = style,
-            color = CodeBlitzTheme.colors.tertiary
-        )
-        Spacer(
-            modifier = Modifier.height(labelGap)
-        )
+        // Переменная для изменения цвета и иконки в режиме настроек
+        var isFocused by remember { mutableStateOf(false) }
+
+        // Название поля
+        if (addLabel) {
+            Text(
+                text = label,
+                style = style,
+                color = CodeBlitzTheme.colors.tertiary
+            )
+            Spacer(
+                modifier = Modifier.height(labelGap)
+            )
+        }
         val interactionSource = remember { MutableInteractionSource() }
         BasicTextField(
             value = text,
@@ -78,7 +84,8 @@ fun TextFieldCodeBlitz(
                 .padding(bottom = 3.dp),
             interactionSource = interactionSource,
             enabled = true,
-            singleLine = true,
+            singleLine = singleLine,
+            // Задание различных цветов в зависимости от режима
             textStyle = if (!isSettings) TextStyle(
                 fontFamily = JetBrains,
                 fontWeight = FontWeight.Normal,
@@ -92,17 +99,19 @@ fun TextFieldCodeBlitz(
                 fontSize = (21 * ScreenDimensions.getScreenRatio()).sp,
                 lineHeight = (26 * ScreenDimensions.getScreenRatio()).sp,
                 letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp,
+                // Разные цвета при фокусе и расфокусе в режиме настроек
                 color = if (!isFocused) CodeBlitzTheme.colors.tertiary else CodeBlitzTheme.colors.primary
             ),
+            // Маска пароля в режиме пароля
             visualTransformation = if (shown != null) (if (!shown!!) PasswordVisualTransformation() else VisualTransformation.None) else VisualTransformation.None
         ) { innerTextField ->
             TextFieldDefaults.DecorationBox(
                 value = text,
                 innerTextField = innerTextField,
-                singleLine = true,
+                singleLine = singleLine,
                 enabled = true,
                 interactionSource = interactionSource,
-                contentPadding = paddingValues, // this is how you can remove the padding
+                contentPadding = paddingValues,
                 visualTransformation = VisualTransformation.None,
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = CodeBlitzTheme.colors.secondaryContainer,
@@ -117,8 +126,10 @@ fun TextFieldCodeBlitz(
                 ),
                 shape = RoundedCornerShape(10.dp),
                 trailingIcon = {
+                    // Иконка глаза в режиме пароля
                     if (isPassword) {
                         Icon(
+                            // Изменение иконки в зависимости от того, скрыт ли пароль
                             imageVector = if (shown!!) ImageVector.vectorResource(R.drawable.open_eye)
                             else ImageVector.vectorResource((R.drawable.closed_eye)),
                             modifier = Modifier.clickable { shown = !shown!! },
@@ -126,11 +137,13 @@ fun TextFieldCodeBlitz(
                             tint = CodeBlitzTheme.colors.primary
                         )
                     } else {
-                        if(isSettings) {
+                        // Иконка ручки или галочки в режиме настроек
+                        if (isSettings) {
                             Icon(
                                 imageVector = if (isFocused) ImageVector.vectorResource(R.drawable.check)
                                 else ImageVector.vectorResource((R.drawable.pen)),
-                                modifier = if (isFocused) Modifier.clickable {iconOnClick()} else Modifier,
+                                // Для применения настроек в режиме настроек используется иконка галочки
+                                modifier = if (isFocused) Modifier.clickable { iconOnClick() } else Modifier,
                                 contentDescription = "",
                                 tint = if (isFocused) CodeBlitzTheme.colors.primary else CodeBlitzTheme.colors.secondary
                             )

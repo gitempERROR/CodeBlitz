@@ -5,6 +5,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import com.example.codeblitz.R
 
+//Используемые шрифты
 val Intro = FontFamily(
     Font(R.font.intro, FontWeight.Normal)
 )

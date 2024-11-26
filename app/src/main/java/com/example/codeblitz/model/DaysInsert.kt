@@ -4,8 +4,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Days(
-    val id: Int,
+data class DaysInsert(
     val day_date: LocalDate,
     val task_count: Int
 )

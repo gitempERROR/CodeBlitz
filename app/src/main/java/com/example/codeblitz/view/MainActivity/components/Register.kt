@@ -29,13 +29,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.codeblitz.R
 import com.example.codeblitz.domain.RegisterViewModel
+import com.example.codeblitz.domain.utils.ScreenDimensions
 import com.example.codeblitz.view.ui.theme.ButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
@@ -55,40 +55,59 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
     }
 
     Box(
-        modifier = Modifier.fillMaxSize().background(color = CodeBlitzTheme.colors.background)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = CodeBlitzTheme.colors.background)
     )
     {
         Column(
-            modifier = Modifier.fillMaxSize().zIndex(3f)
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(3f)
         ) {
             Row(
                 modifier = Modifier.fillMaxSize()
             ) {
                 Box(
-                    modifier = Modifier.weight(3.3f / (if (vertical.value) 1 else (3/2))).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
+                    modifier = Modifier
+                        .weight(3.3f / (if (vertical.value) 1 else (3 / 2)))
+                        .fillMaxHeight()
+                        .background(color = CodeBlitzTheme.colors.primary)
                 )
                 Spacer(
-                    modifier = Modifier.weight(1.2f / (if (vertical.value) 1 else (3/2)))
+                    modifier = Modifier.weight(1.2f / (if (vertical.value) 1 else (3 / 2)))
                 )
                 Box(
-                    modifier = Modifier.weight(3.3f / (if (vertical.value) 1 else (3/2))).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
+                    modifier = Modifier
+                        .weight(3.3f / (if (vertical.value) 1 else (3 / 2)))
+                        .fillMaxHeight()
+                        .background(color = CodeBlitzTheme.colors.primary)
                 )
                 Spacer(
-                    modifier = Modifier.weight(1.2f / (if (vertical.value) 1 else (3/2)))
+                    modifier = Modifier.weight(1.2f / (if (vertical.value) 1 else (3 / 2)))
                 )
                 Box(
-                    modifier = Modifier.weight(3.3f / (if (vertical.value) 1 else (3/2))).fillMaxHeight().background(color = CodeBlitzTheme.colors.primary)
+                    modifier = Modifier
+                        .weight(3.3f / (if (vertical.value) 1 else (3 / 2)))
+                        .fillMaxHeight()
+                        .background(color = CodeBlitzTheme.colors.primary)
                 )
                 Column(
-                    modifier = Modifier.fillMaxSize().weight(27f)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(27f)
                 ) {
                     if (vertical.value) {
                         Spacer(
-                            modifier = Modifier.height(50.dp).fillMaxWidth()
+                            modifier = Modifier
+                                .height(50.dp)
+                                .fillMaxWidth()
                         )
                     }
                     Column(
-                        modifier = Modifier.fillMaxSize().background(color = CodeBlitzTheme.colors.onBackground)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(color = CodeBlitzTheme.colors.onBackground)
                     ) {
                         if (vertical.value) {
                             Spacer(
@@ -98,25 +117,35 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                 imageVector = ImageVector.vectorResource(R.drawable.vector_logo_codebliz),
                                 contentDescription = "",
                                 modifier = Modifier
-                                    .fillMaxWidth().weight(0.15f)
+                                    .fillMaxWidth()
+                                    .weight(0.15f)
                             )
                             Spacer(
-                                modifier = Modifier.weight(0.1f)
+                                modifier = Modifier.weight(
+                                    0.1f * ScreenDimensions.getScreenRatio()
+                                        .toFloat() * ScreenDimensions.getScreenRatio().toFloat()
+                                )
                             )
-                        }
-                        else {
+                        } else {
                             Spacer(
                                 modifier = Modifier.height(30.dp)
                             )
                         }
                         Column(
-                            modifier = if (vertical.value) Modifier.fillMaxSize().weight(0.6f)
-                            else Modifier.fillMaxSize().weight(0.6f).verticalScroll(
-                                rememberScrollState()
-                            )
+                            modifier = if (vertical.value) Modifier
+                                .fillMaxSize()
+                                .weight(0.6f)
+                            else Modifier
+                                .fillMaxSize()
+                                .weight(0.6f)
+                                .verticalScroll(
+                                    rememberScrollState()
+                                )
                         ) {
                             TextFieldCodeBlitz(
-                                modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
+                                modifier = Modifier
+                                    .padding(horizontal = 15.dp)
+                                    .fillMaxWidth(),
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
                                 label = "Логин",
@@ -132,7 +161,9 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                 modifier = Modifier.height(40.dp)
                             )
                             TextFieldCodeBlitz(
-                                modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
+                                modifier = Modifier
+                                    .padding(horizontal = 15.dp)
+                                    .fillMaxWidth(),
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
                                 label = "Пароль",
@@ -149,7 +180,9 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                 modifier = Modifier.height(40.dp)
                             )
                             TextFieldCodeBlitz(
-                                modifier = Modifier.padding(horizontal = 15.dp).fillMaxWidth(),
+                                modifier = Modifier
+                                    .padding(horizontal = 15.dp)
+                                    .fillMaxWidth(),
                                 internalModifier = Modifier.fillMaxWidth(),
                                 labelGap = 1.dp,
                                 label = "Повторите пароль",
@@ -174,12 +207,14 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                             color = CodeBlitzTheme.colors.background,
                                             shape = RoundedCornerShape(10.dp)
                                         ),
-                                ){
+                                ) {
                                     Text(
                                         "Логин занят!",
                                         style = CodeBlitzTheme.typography.bodyMedium,
                                         color = CodeBlitzTheme.colors.tertiary,
-                                        modifier = Modifier.align(Alignment.Center).padding(horizontal = 12.dp, vertical = 12.dp),
+                                        modifier = Modifier
+                                            .align(Alignment.Center)
+                                            .padding(horizontal = 12.dp, vertical = 12.dp),
                                         textAlign = TextAlign.Center,
                                         maxLines = 2
                                     )
@@ -197,12 +232,14 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                             color = CodeBlitzTheme.colors.background,
                                             shape = RoundedCornerShape(10.dp)
                                         ),
-                                ){
+                                ) {
                                     Text(
                                         "Некорректная почта!",
                                         style = CodeBlitzTheme.typography.bodyMedium,
                                         color = CodeBlitzTheme.colors.tertiary,
-                                        modifier = Modifier.align(Alignment.Center).padding(horizontal = 12.dp, vertical = 12.dp),
+                                        modifier = Modifier
+                                            .align(Alignment.Center)
+                                            .padding(horizontal = 12.dp, vertical = 12.dp),
                                         textAlign = TextAlign.Center,
                                         maxLines = 2
                                     )
@@ -220,12 +257,14 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                             color = CodeBlitzTheme.colors.background,
                                             shape = RoundedCornerShape(10.dp)
                                         ),
-                                ){
+                                ) {
                                     Text(
                                         "Слишком слабый пароль!",
                                         style = CodeBlitzTheme.typography.bodyMedium,
                                         color = CodeBlitzTheme.colors.tertiary,
-                                        modifier = Modifier.align(Alignment.Center).padding(horizontal = 12.dp, vertical = 12.dp),
+                                        modifier = Modifier
+                                            .align(Alignment.Center)
+                                            .padding(horizontal = 12.dp, vertical = 12.dp),
                                         textAlign = TextAlign.Center,
                                         maxLines = 2
                                     )
@@ -311,7 +350,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                 .height(110.dp)
                 .align(Alignment.BottomCenter)
                 .zIndex(4f)
-        ){
+        ) {
             ButtonCodeBlitz(
                 modifier = Modifier
                     .fillMaxWidth()

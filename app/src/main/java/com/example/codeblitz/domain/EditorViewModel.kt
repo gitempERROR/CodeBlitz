@@ -66,15 +66,15 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
     val theme = themeState.theme()
 
     private var _textFieldValue = mutableStateOf(
-            TextFieldValue(
-                annotatedString = parseCodeAsAnnotatedString(
-                    parser = parser,
-                    theme = theme,
-                    lang = _selectedLanguageStyle!!,
-                    code = ""
-                )
+        TextFieldValue(
+            annotatedString = parseCodeAsAnnotatedString(
+                parser = parser,
+                theme = theme,
+                lang = _selectedLanguageStyle!!,
+                code = ""
             )
         )
+    )
     val textFieldValue get() = _textFieldValue.value
 
     val options: MutableList<String> = mutableListOf()
@@ -98,7 +98,7 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
     fun setSelectedLanguage(languageName: String) {
         selectedOption.value = languageName
         _languageList.value.forEach { item ->
-            if(item.language_name == languageName) {
+            if (item.language_name == languageName) {
                 _selectedLanguage.value = item
                 _selectedLanguageStyle = _languagesStyles[_selectedLanguage.value!!.language_name]
                 changeCode(_textFieldValue.value)
@@ -111,12 +111,13 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
-                    val solutionStatus: SolutionStatuses = Constants.supabase.from("solution_statuses")
-                        .select {
-                            filter {
-                                SolutionStatuses::status_name eq "solved"
-                            }
-                        }.decodeSingle()
+                    val solutionStatus: SolutionStatuses =
+                        Constants.supabase.from("solution_statuses")
+                            .select {
+                                filter {
+                                    SolutionStatuses::status_name eq "solved"
+                                }
+                            }.decodeSingle()
 
                     val solution = TaskSolutionsInsert(
                         user_id = CurrentUser.userData!!.id,
@@ -136,8 +137,7 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                             TaskSolutions::task_id eq _id.value
                         }
                     }
-                }
-                catch (e: Exception){
+                } catch (e: Exception) {
                     Log.e("supabase", "endTask: $e")
                 }
             }
@@ -208,8 +208,7 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                                 )
                             )
                         )
-                    }
-                    catch (e: Exception) {
+                    } catch (e: Exception) {
                         Log.e("supabase", "get solution error $e")
                     }
 
@@ -233,8 +232,7 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                             }
                         }
                     }
-                }
-                catch (e: Exception) {
+                } catch (e: Exception) {
                     Log.e("supabase", "language list error $e")
                 }
             }

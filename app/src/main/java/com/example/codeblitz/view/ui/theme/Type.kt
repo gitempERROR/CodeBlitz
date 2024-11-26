@@ -2,19 +2,18 @@ package com.example.codeblitz.view.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.codeblitz.domain.utils.ScreenDimensions
 
-// Set of Material typography styles to start with
+// Используемые стили текста, размер текста изменятся от размера экрана
 val Typography: Typography
     get() = Typography(
         titleMedium = TextStyle(
             fontFamily = Intro,
             fontWeight = FontWeight.Normal,
             fontSize = (25 * ScreenDimensions.getScreenRatio()).sp,
-            lineHeight = (28* ScreenDimensions.getScreenRatio()).sp,
+            lineHeight = (28 * ScreenDimensions.getScreenRatio()).sp,
             letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp
         ),
         titleSmall = TextStyle(

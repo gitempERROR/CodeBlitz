@@ -38,7 +38,8 @@ open class BaseViewModel : ViewModel() {
                             SettingsData::user_id eq CurrentUser.userData!!.id
                         }
                     }.decodeSingleOrNull()
-                val selectedTheme = if (settings!!.selected_theme != null) themes.find { it.id == settings.selected_theme } else themes[0]
+                val selectedTheme =
+                    if (settings!!.selected_theme != null) themes.find { it.id == settings.selected_theme } else themes[0]
 
                 val selectedColorScheme = ColorScheme(
                     name = selectedTheme!!.theme_name,

@@ -30,6 +30,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -47,7 +48,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -55,17 +55,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.codeblitz.R
 import com.example.codeblitz.domain.SolvedTaskViewModel
-import com.example.codeblitz.domain.navigation.Routes
+import com.example.codeblitz.domain.utils.CurrentUser
 import com.example.codeblitz.domain.utils.ScreenDimensions
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
-import com.example.codeblitz.view.ui.theme.CustomDropDownMenu
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.JetBrains
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
-import com.wakaztahir.codeeditor.highlight.model.CodeLang
-import com.wakaztahir.codeeditor.highlight.prettify.PrettifyParser
-import com.wakaztahir.codeeditor.highlight.theme.CodeThemeType
-import com.wakaztahir.codeeditor.highlight.utils.parseCodeAsAnnotatedString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,6 +68,14 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
     val configuration = LocalConfiguration.current
     val vertical = remember {
         derivedStateOf { configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
+    }
+
+    LaunchedEffect(
+        viewModel.navigationStateFlow
+    ) {
+        viewModel.navigationStateFlow.collect { event ->
+            event?.let { controller.navigate(event.route) }
+        }
     }
 
     var textFieldValue by remember {
@@ -124,7 +127,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
     val onBackground = CodeBlitzTheme.colors.onBackground
     val background = CodeBlitzTheme.colors.background
 
-    val color by remember { derivedStateOf { if (taskOpened) onBackground else background }}
+    val color by remember { derivedStateOf { if (taskOpened) onBackground else background } }
     val animatedColor by animateColorAsState(
         targetValue = color,
         label = "color",
@@ -180,9 +183,9 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                     modifierIcon = Modifier.rotate(animatedRotation),
                     iconId = R.drawable.pointerdown,
                     tint = CodeBlitzTheme.colors.primary,
-                    onClick = {taskOpened = !taskOpened}
+                    onClick = { taskOpened = !taskOpened }
                 )
-                if(taskOpened) {
+                if (taskOpened) {
                     Text(
                         text = viewModel.desc,
                         style = CodeBlitzTheme.typography.titleSmall,
@@ -204,7 +207,8 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                         ),
                         tint = CodeBlitzTheme.colors.primary,
                         iconId = R.drawable.pointerbackthin,
-                        modifierIcon = Modifier.scale(1.6f)
+                        modifierIcon = Modifier.scale(1.6f),
+                        onClick = { viewModel.navigateToLeaderBoard() }
                     )
                 }
             }
@@ -233,7 +237,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                     .padding(start = 50.dp)
                     .width(1.dp)
                     .background(color = CodeBlitzTheme.colors.secondary)
-            ){
+            ) {
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -249,20 +253,21 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                     )
                     .padding(horizontal = 5.dp)
             ) {
-                Text(
-                    text = viewModel.nickname,
-                    modifier = Modifier
-                        .padding(horizontal = 5.dp, vertical = 20.dp)
-                        .align(Alignment.TopStart)
-                        .background(
-                            color = CodeBlitzTheme.colors.background,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .width(200.dp)
-                        .padding(start = 10.dp),
-                    style = CodeBlitzTheme.typography.displaySmall,
-                    color = CodeBlitzTheme.colors.tertiary
-                )
+                if (!CurrentUser.isAdmin)
+                    Text(
+                        text = viewModel.nickname,
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp, vertical = 20.dp)
+                            .align(Alignment.TopStart)
+                            .background(
+                                color = CodeBlitzTheme.colors.background,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .width(200.dp)
+                            .padding(start = 10.dp),
+                        style = CodeBlitzTheme.typography.displaySmall,
+                        color = CodeBlitzTheme.colors.tertiary
+                    )
                 Text(
                     text = viewModel.lang,
                     modifier = Modifier
@@ -278,34 +283,41 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                     color = CodeBlitzTheme.colors.tertiary,
                     textAlign = TextAlign.Right
                 )
+                if (!CurrentUser.isAdmin)
+                    Text(
+                        text = viewModel.date,
+                        modifier = Modifier
+                            .padding(horizontal = 5.dp, vertical = 10.dp)
+                            .align(Alignment.BottomStart)
+                            .background(
+                                color = CodeBlitzTheme.colors.background,
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                            .width(150.dp)
+                            .padding(start = 10.dp),
+                        style = CodeBlitzTheme.typography.displaySmall,
+                        color = CodeBlitzTheme.colors.tertiary
+                    )
                 Text(
-                    text = viewModel.date,
+                    text = viewModel.time + " минут",
                     modifier = Modifier
-                        .padding(horizontal = 5.dp, vertical = 10.dp)
-                        .align(Alignment.BottomStart)
+                        .padding(
+                            horizontal = 5.dp,
+                            vertical = if (CurrentUser.isAdmin) 20.dp else 10.dp
+                        )
+                        .align(if (CurrentUser.isAdmin) Alignment.TopStart else Alignment.BottomEnd)
                         .background(
                             color = CodeBlitzTheme.colors.background,
                             shape = RoundedCornerShape(10.dp)
                         )
                         .width(150.dp)
-                        .padding(start = 10.dp),
-                    style = CodeBlitzTheme.typography.displaySmall,
-                    color = CodeBlitzTheme.colors.tertiary
-                )
-                Text(
-                    text = viewModel.time,
-                    modifier = Modifier
-                        .padding(horizontal = 5.dp, vertical = 10.dp)
-                        .align(Alignment.BottomEnd)
-                        .background(
-                            color = CodeBlitzTheme.colors.background,
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                        .width(120.dp)
-                        .padding(end = 10.dp),
+                        .padding(
+                            end = if (CurrentUser.isAdmin) 0.dp else 10.dp,
+                            start = if (CurrentUser.isAdmin) 10.dp else 0.dp
+                        ),
                     style = CodeBlitzTheme.typography.displaySmall,
                     color = CodeBlitzTheme.colors.primary,
-                    textAlign = TextAlign.Right
+                    textAlign = if (CurrentUser.isAdmin) TextAlign.Left else TextAlign.Right
                 )
             }
             Row(
@@ -335,7 +347,9 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                         letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp,
                         color = CodeBlitzTheme.colors.tertiary
                     ),
-                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
                     enabled = false
                 ) { innerTextField ->
                     TextFieldDefaults.DecorationBox(
@@ -363,6 +377,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
             }
         }
     }
+    //Отображение верхней горизонтальной полосы только при вертикальном экране
     if (vertical.value) {
         Column(
             modifier = Modifier.zIndex(3.5f)
@@ -375,6 +390,41 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                     .background(color = CodeBlitzTheme.colors.tertiary)
                     .fillMaxWidth()
                     .height(10.dp)
+            )
+        }
+    }
+    if (CurrentUser.isAdmin) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(3.5f)
+        ) {
+            Spacer(
+                modifier = Modifier.weight(1f)
+            )
+            IconButtonCodeBlitz(
+                modifier = Modifier
+                    .padding(end = 5.dp, bottom = 5.dp)
+                    .size(60.dp)
+                    .align(Alignment.End),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = CodeBlitzTheme.colors.onBackground
+                ),
+                tint = CodeBlitzTheme.colors.primary,
+                iconId = R.drawable.check,
+                onClick = { viewModel.approveSolution() }
+            )
+            IconButtonCodeBlitz(
+                modifier = Modifier
+                    .padding(end = 5.dp, bottom = 5.dp)
+                    .size(60.dp)
+                    .align(Alignment.End),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = CodeBlitzTheme.colors.onBackground
+                ),
+                tint = CodeBlitzTheme.colors.primary,
+                iconId = R.drawable.cross,
+                onClick = { viewModel.denySolution() }
             )
         }
     }

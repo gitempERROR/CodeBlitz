@@ -112,7 +112,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
     val onBackground = CodeBlitzTheme.colors.onBackground
     val background = CodeBlitzTheme.colors.background
 
-    val color by remember { derivedStateOf { if (taskOpened) onBackground else background }}
+    val color by remember { derivedStateOf { if (taskOpened) onBackground else background } }
     val animatedColor by animateColorAsState(
         targetValue = color,
         label = "color",
@@ -168,9 +168,9 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
                     modifierIcon = Modifier.rotate(animatedRotation),
                     iconId = R.drawable.pointerdown,
                     tint = CodeBlitzTheme.colors.primary,
-                    onClick = {taskOpened = !taskOpened}
+                    onClick = { taskOpened = !taskOpened }
                 )
-                if(taskOpened) {
+                if (taskOpened) {
                     Text(
                         text = viewModel.desc,
                         style = CodeBlitzTheme.typography.titleSmall,
@@ -231,7 +231,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
                     .padding(start = 50.dp)
                     .width(1.dp)
                     .background(color = CodeBlitzTheme.colors.secondary)
-            ){
+            ) {
                 Column(
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -266,7 +266,9 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
                         letterSpacing = (0.5 * ScreenDimensions.getScreenRatio()).sp,
                         color = CodeBlitzTheme.colors.tertiary
                     ),
-                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
                 ) { innerTextField ->
                     TextFieldDefaults.DecorationBox(
                         value = "",

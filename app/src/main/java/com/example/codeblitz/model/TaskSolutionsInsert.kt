@@ -4,7 +4,7 @@ import kotlinx.datetime.LocalTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TaskSolutionsInsert (
+data class TaskSolutionsInsert(
     val user_id: String,
     val task_id: Int,
     val language_id: Int,

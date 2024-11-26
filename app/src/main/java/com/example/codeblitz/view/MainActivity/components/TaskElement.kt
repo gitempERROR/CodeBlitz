@@ -22,8 +22,10 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.codeblitz.R
+import com.example.codeblitz.domain.utils.CurrentUser
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 
+//Элемент задачи на главном экране
 @Composable
 fun TaskElement(
     controller: NavController,
@@ -33,6 +35,7 @@ fun TaskElement(
     id: Int = 0
 ) {
 
+    //Динамические иконки в зависимости от статуса задачи
     val icons = mapOf(
         "not started" to R.drawable.start,
         "started" to R.drawable.ellipsis,
@@ -41,14 +44,16 @@ fun TaskElement(
         "denied" to R.drawable.cross
     )
 
+    //Динамические цвета фона в зависимости от статуса задачи
     val backgroundColors = mapOf(
-        "not started" to CodeBlitzTheme.colors.primary,
+        "not started" to if (CurrentUser.isAdmin) CodeBlitzTheme.colors.secondary else CodeBlitzTheme.colors.primary,
         "started" to CodeBlitzTheme.colors.tertiary,
         "solved" to CodeBlitzTheme.colors.tertiary,
         "approved" to CodeBlitzTheme.colors.secondary,
         "denied" to CodeBlitzTheme.colors.secondaryContainer
     )
 
+    //Динамические цвета иконок в зависимости от статуса задачи
     val iconColors = mapOf(
         "not started" to CodeBlitzTheme.colors.secondary,
         "started" to CodeBlitzTheme.colors.secondary,
@@ -57,6 +62,7 @@ fun TaskElement(
         "denied" to CodeBlitzTheme.colors.secondaryContainer
     )
 
+    //Динамические цвета текста в зависимости от статуса задачи
     val textColors = mapOf(
         "not started" to CodeBlitzTheme.colors.tertiary,
         "started" to CodeBlitzTheme.colors.tertiary,
@@ -82,7 +88,8 @@ fun TaskElement(
                 color = backgroundColors[status]!!, shape = RoundedCornerShape(10.dp)
             )
             .clickable {
-                if (status == "not started" || status == "started") {
+                //Переход к описанию задачи с передачей параметров
+                if ((status == "not started" || status == "started") && !CurrentUser.isAdmin) {
                     controller.navigate(
                         "TaskDesc"
                                 + "/${title}"

@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -73,7 +72,9 @@ fun Settings(controller: NavController, viewModel: SettingsViewModel = hiltViewM
             Text(
                 text = "Настройки",
                 textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.Center).padding(horizontal = 110.dp),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 110.dp),
                 style = CodeBlitzTheme.typography.titleMedium,
                 maxLines = 2,
                 color = CodeBlitzTheme.colors.tertiary

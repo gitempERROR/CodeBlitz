@@ -4,7 +4,7 @@ import kotlinx.datetime.LocalTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TaskSolutions (
+data class TaskSolutions(
     val id: Int,
     val user_id: UserData,
     val task_id: Int,
@@ -18,4 +18,4 @@ data class TaskSolutions (
     var task_title: String = "Empty",
     var task_desc: String = "Empty",
     var date: String = "Empty"
-    )
+)

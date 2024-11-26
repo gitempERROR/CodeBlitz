@@ -16,10 +16,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -30,9 +26,9 @@ import androidx.navigation.NavController
 import com.example.codeblitz.R
 import com.example.codeblitz.domain.LeaderboardViewModel
 import com.example.codeblitz.domain.utils.CurrentUser
+import com.example.codeblitz.domain.utils.ScreenDimensions
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.CustomDropDownMenu
-import com.example.codeblitz.view.ui.theme.CustomDropDownMenuColors
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
@@ -77,9 +73,11 @@ fun Leaderboard(controller: NavController, viewModel: LeaderboardViewModel = hil
                 onClick = { viewModel.navigateToProfile() }
             )
             Text(
-                text = "Таблица лидеров",
+                text = if (CurrentUser.isAdmin) "Проверка решений" else "Таблица лидеров",
                 textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.Center).padding(horizontal = 110.dp),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 110.dp),
                 style = CodeBlitzTheme.typography.titleMedium,
                 maxLines = 2,
                 color = CodeBlitzTheme.colors.tertiary
@@ -102,37 +100,41 @@ fun Leaderboard(controller: NavController, viewModel: LeaderboardViewModel = hil
         )
         Box(
             modifier = Modifier
-                .padding(horizontal = 35.dp)
+                .padding(horizontal = (35 * ScreenDimensions.getScreenRatio()).dp)
                 .fillMaxWidth()
                 .height(80.dp)
         ) {
-            Text(
-                text = "Фильтры",
-                modifier = Modifier.fillMaxWidth().padding(start = 5.dp),
-                style = CodeBlitzTheme.typography.bodyLarge,
-                color = CodeBlitzTheme.colors.tertiary
-            )
+            if (!CurrentUser.isAdmin)
+                Text(
+                    text = "Фильтры",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 5.dp),
+                    style = CodeBlitzTheme.typography.bodyLarge,
+                    color = CodeBlitzTheme.colors.tertiary
+                )
             CustomDropDownMenu(
                 modifier = Modifier
-                    .align(Alignment.TopEnd),
+                    .align(if (CurrentUser.isAdmin) Alignment.CenterEnd else Alignment.TopEnd),
                 selectedText = viewModel.selectedOptionTask,
                 options = viewModel.optionsTask,
                 backgroundColor = CodeBlitzTheme.colors.background,
                 dividerColor = CodeBlitzTheme.colors.onBackground,
                 onOptionSelected = { viewModel.updateFilters() }
             )
+            if (!CurrentUser.isAdmin)
+                CustomDropDownMenu(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart),
+                    selectedText = viewModel.selectedOptionDate,
+                    options = viewModel.optionsDate,
+                    backgroundColor = CodeBlitzTheme.colors.background,
+                    dividerColor = CodeBlitzTheme.colors.onBackground,
+                    onOptionSelected = { viewModel.updateFilters() }
+                )
             CustomDropDownMenu(
                 modifier = Modifier
-                    .align(Alignment.BottomStart),
-                selectedText = viewModel.selectedOptionDate,
-                options = viewModel.optionsDate,
-                backgroundColor = CodeBlitzTheme.colors.background,
-                dividerColor = CodeBlitzTheme.colors.onBackground,
-                onOptionSelected = { viewModel.updateFilters() }
-            )
-            CustomDropDownMenu(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd),
+                    .align(if (CurrentUser.isAdmin) Alignment.CenterStart else Alignment.BottomEnd),
                 selectedText = viewModel.selectedOptionLang,
                 options = viewModel.optionsLang,
                 backgroundColor = CodeBlitzTheme.colors.background,
@@ -158,7 +160,7 @@ fun Leaderboard(controller: NavController, viewModel: LeaderboardViewModel = hil
                     top = 20.dp
                 )
             ) {
-                items(viewModel.solutionsList.value){ item ->
+                items(viewModel.solutionsList.value) { item ->
                     LeaderBoardElement(
                         place = item.place,
                         time = item.spent_time,

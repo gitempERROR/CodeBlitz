@@ -3,8 +3,6 @@ package com.example.codeblitz.view.ui.theme
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -22,9 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.codeblitz.R
-import kotlin.reflect.jvm.internal.impl.types.checker.TypeRefinementSupport.Enabled
 
-
+//Прозрачная кнопка, только текст кнопки
 @Composable
 fun TransparentButtonCodeBlitz(
     text: String = "Button",
@@ -47,6 +44,7 @@ fun TransparentButtonCodeBlitz(
     }
 }
 
+//Основная кнопка приложения
 @Composable
 fun ButtonCodeBlitz(
     modifier: Modifier = Modifier,
@@ -83,6 +81,7 @@ fun ButtonCodeBlitz(
     }
 }
 
+//Кнопка с иконкой вместо текста
 @Composable
 fun IconButtonCodeBlitz(
     onClick: () -> Unit = {},
@@ -111,11 +110,15 @@ fun IconButtonCodeBlitz(
             imageVector = ImageVector.vectorResource(iconId),
             contentDescription = "",
             tint = tint,
-            modifier = modifierIcon.fillMaxSize().align(Alignment.CenterVertically).padding(0.dp)
+            modifier = modifierIcon
+                .fillMaxSize()
+                .align(Alignment.CenterVertically)
+                .padding(0.dp)
         )
     }
 }
 
+//Прозрачная кнопка с иконкой вместо текста
 @Preview
 @Composable
 fun TransparentIconButtonCodeBlitz(

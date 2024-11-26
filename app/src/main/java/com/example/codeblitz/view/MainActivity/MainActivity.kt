@@ -22,6 +22,7 @@ import com.example.codeblitz.view.MainActivity.components.BottomBar
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+//Основное приложение
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,11 +33,13 @@ class MainActivity : ComponentActivity() {
             var showBottomBar by rememberSaveable { mutableStateOf(true) }
             val navBackStackEntry by controller.currentBackStackEntryAsState()
 
-
+            //Получение характеристик дисплея
             val displayMetrics = resources.displayMetrics
 
+            //Инициализация объекта для получения соотношения экрана
             ScreenDimensions.init(displayMetrics)
 
+            //Отображение нижней панели на всех экранах кроме логина и регистрации
             showBottomBar = when (navBackStackEntry?.destination?.route) {
                 Routes.Login.route -> false
                 Routes.Register.route -> false

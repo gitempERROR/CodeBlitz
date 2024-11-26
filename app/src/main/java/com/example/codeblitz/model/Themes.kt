@@ -3,7 +3,7 @@ package com.example.codeblitz.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Themes (
+data class Themes(
     val id: Int,
     val theme_name: String,
     val color_1: String,

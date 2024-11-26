@@ -1,15 +1,14 @@
 package com.example.codeblitz.domain.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.compose.NavHost
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import com.example.codeblitz.view.MainActivity.components.AddTask
 import com.example.codeblitz.view.MainActivity.components.Editor
 import com.example.codeblitz.view.MainActivity.components.Leaderboard
-import com.example.codeblitz.view.MainActivity.components.Main
 import com.example.codeblitz.view.MainActivity.components.Login
+import com.example.codeblitz.view.MainActivity.components.Main
 import com.example.codeblitz.view.MainActivity.components.Profile
 import com.example.codeblitz.view.MainActivity.components.Register
 import com.example.codeblitz.view.MainActivity.components.Settings
@@ -48,6 +47,9 @@ fun NavController(controller: NavHostController) {
         }
         composable(Routes.SolvedTask.route) {
             SolvedTask(controller)
+        }
+        composable(Routes.AddTask.route) {
+            AddTask(controller)
         }
     }
 }

@@ -7,12 +7,16 @@ import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.domain.utils.Constants
 import com.example.codeblitz.domain.utils.CurrentUser
 import com.example.codeblitz.model.Days
+import com.example.codeblitz.model.DaysInsert
 import com.example.codeblitz.model.TaskSolutions
 import com.example.codeblitz.model.Tasks
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.launch
+import kotlinx.datetime.toKotlinLocalDate
+import java.time.LocalDate
+
 import java.util.Date
 import javax.inject.Inject
 
@@ -27,11 +31,32 @@ class MainViewModel @Inject constructor() : BaseViewModel() {
 
     init {
         viewModelScope.launch {
-            val day: Days? = Constants.supabase.from("days").select() {
+            val tomorrow = LocalDate.now().plusDays(1)
+
+            val date = if (CurrentUser.isAdmin) tomorrow.toKotlinLocalDate() else Date()
+
+            var day: Days? = Constants.supabase.from("days").select() {
                 filter {
-                    Days::day_date eq Date()
+                    Days::day_date eq date
                 }
             }.decodeSingleOrNull()
+
+            if (day == null) {
+                if (CurrentUser.isAdmin) {
+                    val nextDay = DaysInsert(
+                        day_date = tomorrow.toKotlinLocalDate(),
+                        0
+                    )
+                    Constants.supabase.from("days").insert(
+                        nextDay
+                    )
+                    day = Constants.supabase.from("days").select() {
+                        filter {
+                            Days::day_date eq tomorrow.toKotlinLocalDate()
+                        }
+                    }.decodeSingleOrNull()
+                }
+            }
             if (day != null) {
                 _tasks.value = Constants.supabase.from("tasks").select() {
                     filter {
@@ -39,9 +64,10 @@ class MainViewModel @Inject constructor() : BaseViewModel() {
                     }
                 }.decodeList<Tasks>().toMutableList()
             }
-            if (_tasks.value.size == 2) {
-                _tasks.value.forEachIndexed {id, element ->
-                    val columns = Columns.raw("""
+            if (!CurrentUser.isAdmin) {
+                _tasks.value.forEachIndexed { id, element ->
+                    val columns = Columns.raw(
+                        """
                         id,
                         user_id (
                           id,
@@ -62,7 +88,8 @@ class MainViewModel @Inject constructor() : BaseViewModel() {
                         ),
                         start_time,
                         end_time
-                    """.trimIndent())
+                    """.trimIndent()
+                    )
                     val solution = Constants.supabase.from("task_solutions").select(
                         columns = columns
                     ) {
@@ -74,8 +101,7 @@ class MainViewModel @Inject constructor() : BaseViewModel() {
 
                     if (solution == null) {
                         _tasks.value[id].task_status = "not started"
-                    }
-                    else {
+                    } else {
                         _tasks.value[id].task_status = solution.current_status.status_name
                     }
                 }

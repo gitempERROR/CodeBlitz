@@ -43,7 +43,9 @@ fun Popup(
                 .align(Alignment.Center)
         ) {
             Column(
-                modifier = Modifier.fillMaxSize().padding(start = 15.dp, top = 10.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 15.dp, top = 10.dp)
             ) {
                 Row(
 
@@ -56,7 +58,9 @@ fun Popup(
                     )
                     TransparentIconButtonCodeBlitz(
                         onClick = { onCloseClick() },
-                        modifier = Modifier.weight(0.2f).align(Alignment.Top),
+                        modifier = Modifier
+                            .weight(0.2f)
+                            .align(Alignment.Top),
                         modifierIcon = Modifier.align(Alignment.Top),
                         iconId = R.drawable.cross,
                         tint = CodeBlitzTheme.colors.secondary
@@ -74,9 +78,11 @@ fun Popup(
                     modifier = Modifier.height(15.dp)
                 )
                 ButtonCodeBlitz(
-                    text="Закончить",
+                    text = "Закончить",
                     onClick = { onEndClick() },
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 30.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 30.dp)
                 )
             }
         }

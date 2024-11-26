@@ -3,7 +3,7 @@ package com.example.codeblitz.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UserData (
+data class UserData(
     val id: String,
     val firstname: String,
     val surname: String,

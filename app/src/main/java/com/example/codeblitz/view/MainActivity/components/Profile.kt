@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -44,7 +43,7 @@ fun Profile(
     ) {
         viewModel.navigationStateFlow.collect { event ->
             event?.let {
-                if(event.route != Routes.Login.route)
+                if (event.route != Routes.Login.route)
                     controller.navigate(viewModel.backRoute)
                 else
                     controller.navigate(event.route)
@@ -84,7 +83,9 @@ fun Profile(
             Text(
                 text = "Профиль",
                 textAlign = TextAlign.Center,
-                modifier = Modifier.align(Alignment.Center).padding(horizontal = 110.dp),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 110.dp),
                 style = CodeBlitzTheme.typography.titleMedium,
                 maxLines = 2,
                 color = CodeBlitzTheme.colors.tertiary
@@ -109,8 +110,10 @@ fun Profile(
             modifier = Modifier
                 .padding(horizontal = 35.dp)
                 .fillMaxWidth()
-                .onFocusChanged { if(!it.isFocused) viewModel.refreshFields() },
-            internalModifier = Modifier.fillMaxWidth().height(35.dp),
+                .onFocusChanged { if (!it.isFocused) viewModel.refreshFields() },
+            internalModifier = Modifier
+                .fillMaxWidth()
+                .height(35.dp),
             labelGap = 20.dp,
             label = "Имя",
             paddingValues = PaddingValues(
@@ -127,7 +130,7 @@ fun Profile(
                     viewModel.userData.copy(firstname = newValue)
                 )
             },
-            iconOnClick = {viewModel.updateUserData()}
+            iconOnClick = { viewModel.updateUserData() }
         )
         Spacer(
             modifier = Modifier.height(20.dp)
@@ -136,8 +139,10 @@ fun Profile(
             modifier = Modifier
                 .padding(horizontal = 35.dp)
                 .fillMaxWidth()
-                .onFocusChanged { if(!it.isFocused) viewModel.refreshFields() },
-            internalModifier = Modifier.fillMaxWidth().height(35.dp),
+                .onFocusChanged { if (!it.isFocused) viewModel.refreshFields() },
+            internalModifier = Modifier
+                .fillMaxWidth()
+                .height(35.dp),
             labelGap = 20.dp,
             label = "Фамилия",
             paddingValues = PaddingValues(
@@ -154,7 +159,7 @@ fun Profile(
                     viewModel.userData.copy(surname = newValue)
                 )
             },
-            iconOnClick = {viewModel.updateUserData()}
+            iconOnClick = { viewModel.updateUserData() }
         )
         Spacer(
             modifier = Modifier.height(20.dp)
@@ -163,8 +168,10 @@ fun Profile(
             modifier = Modifier
                 .padding(horizontal = 35.dp)
                 .fillMaxWidth()
-                .onFocusChanged { if(!it.isFocused) viewModel.refreshFields() },
-            internalModifier = Modifier.fillMaxWidth().height(35.dp),
+                .onFocusChanged { if (!it.isFocused) viewModel.refreshFields() },
+            internalModifier = Modifier
+                .fillMaxWidth()
+                .height(35.dp),
             labelGap = 20.dp,
             label = "Имя пользователя",
             paddingValues = PaddingValues(
@@ -181,7 +188,7 @@ fun Profile(
                     viewModel.userData.copy(nickname = newValue)
                 )
             },
-            iconOnClick = {viewModel.updateUserData()}
+            iconOnClick = { viewModel.updateUserData() }
         )
         Spacer(
             modifier = Modifier.weight(1f)

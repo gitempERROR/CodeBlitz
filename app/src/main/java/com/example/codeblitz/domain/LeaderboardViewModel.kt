@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.domain.utils.Constants
+import com.example.codeblitz.domain.utils.CurrentUser
 import com.example.codeblitz.model.Days
 import com.example.codeblitz.model.Languages
 import com.example.codeblitz.model.TaskSolutions
@@ -15,6 +16,7 @@ import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Date
 import javax.inject.Inject
 import kotlin.math.round
 
@@ -70,31 +72,39 @@ class LeaderboardViewModel @Inject constructor() : BaseViewModel() {
     private suspend fun updateTasks() {
         val columns = Columns.raw(
             """
-                            id,
-                            user_id (
-                              id,
-                              firstname,
-                              surname,
-                              nickname,
-                              role_id
-                            ),
-                            task_id,
-                            language_id (
-                              id,
-                              language_name
-                            ),
-                            code,
-                            current_status (
-                              id,
-                              status_name
-                            ),
-                            start_time,
-                            end_time
-                        """.trimIndent()
+                id,
+                user_id (
+                  id,
+                  firstname,
+                  surname,
+                  nickname,
+                  role_id
+                ),
+                task_id,
+                language_id (
+                  id,
+                  language_name
+                ),
+                code,
+                current_status (
+                  id,
+                  status_name
+                ),
+                start_time,
+                end_time
+            """.trimIndent()
         )
 
-        val dayFilter: Days? = days.find { it.day_date.toString() == selectedOptionDate.value }
+        var dayFilter: Days? = days.find { it.day_date.toString() == selectedOptionDate.value }
         val langFilter: Languages? = languages.find { it.language_name == selectedOptionLang.value }
+
+        if (CurrentUser.isAdmin) {
+            dayFilter = Constants.supabase.from("days").select() {
+                filter {
+                    Days::day_date eq Date()
+                }
+            }.decodeSingleOrNull()
+        }
 
         val task: Tasks = Constants.supabase.from("tasks").select() {
             filter {
@@ -120,10 +130,12 @@ class LeaderboardViewModel @Inject constructor() : BaseViewModel() {
             val difference = item.end_time!!.toSecondOfDay() - item.start_time!!.toSecondOfDay()
             item.spent_time = round((difference / 60f) * 100) / 100f
             item.task_desc = task.task_description
-            item.task_title = if(task.day_task_id == 1) "Задание 1" else "Задание 2"
+            item.task_title = if (task.day_task_id == 1) "Задание 1" else "Задание 2"
             item.date = selectedOptionDate.value
-            if (item.current_status.status_name == "approved")
-            sortedList.add(item)
+            if (item.current_status.status_name == "approved"
+                || (item.current_status.status_name == "solved" && CurrentUser.isAdmin)
+            )
+                sortedList.add(item)
         }
 
         sortedList.sortBy { it.spent_time }

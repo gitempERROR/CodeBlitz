@@ -1,6 +1,5 @@
 package com.example.codeblitz.view.MainActivity.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,40 +24,20 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.codeblitz.R
-import com.example.codeblitz.domain.TaskDescViewModel
-import com.example.codeblitz.domain.navigation.Routes
+import com.example.codeblitz.domain.AddTaskViewModel
 import com.example.codeblitz.view.ui.theme.ButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
+import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
 @Composable
-fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewModel()) {
+fun AddTask(controller: NavController, viewModel: AddTaskViewModel = hiltViewModel()) {
     LaunchedEffect(
         viewModel.navigationStateFlow
     ) {
         viewModel.navigationStateFlow.collect { event ->
-            event?.let {
-                if (event.route != Routes.Profile.route && event.route != Routes.Editor.route)
-                    controller.navigate(event.route)
-                else if (event.route == Routes.Editor.route) {
-                    controller.navigate(
-                        "Editor"
-                                + "/${viewModel.title}"
-                                + "/${viewModel.desc}"
-                                + "/${viewModel.status}"
-                                + "/${viewModel.id}"
-                    )
-                } else {
-                    try {
-                        controller.navigate(
-                            "Profile" + "/Main"
-                        )
-                    } catch (e: Exception) {
-                        Log.e("navigation to profile", e.toString())
-                    }
-                }
-            }
+            event?.let { controller.navigate(event.route) }
         }
     }
 
@@ -95,7 +74,7 @@ fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewM
             Box(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(start = 100.dp, end = 100.dp, top = 3.dp)
+                    .padding(start = 110.dp, end = 110.dp, top = 3.dp)
                     .height(60.dp)
                     .shadow(
                         2.dp,
@@ -108,11 +87,11 @@ fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewM
                     )
             ) {
                 Text(
-                    text = viewModel.title,
+                    text = "Новое задание",
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .padding(horizontal = 10.dp),
+                        .padding(horizontal = 20.dp),
                     style = CodeBlitzTheme.typography.titleMedium,
                     maxLines = 2,
                     color = CodeBlitzTheme.colors.tertiary
@@ -161,13 +140,18 @@ fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewM
                         .fillMaxSize()
                         .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 15.dp)
                 ) {
-                    Text(
-                        text = viewModel.desc,
-                        style = CodeBlitzTheme.typography.titleSmall,
-                        color = CodeBlitzTheme.colors.tertiary,
+                    TextFieldCodeBlitz(
+                        text = viewModel.taskDesk,
+                        onValueChange = { newValue -> viewModel.setTaskDesc(newValue) },
                         modifier = Modifier
                             .weight(1f)
-                            .verticalScroll(rememberScrollState())
+                            .fillMaxWidth(),
+                        internalModifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState()),
+                        addLabel = false,
+                        singleLine = false
                     )
                     Box(
                         modifier = Modifier
@@ -181,30 +165,19 @@ fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewM
                     Spacer(
                         modifier = Modifier.height(5.dp)
                     )
-                    Text(
-                        text = "После начала попытки стартует отсчёт времени.",
-                        style = CodeBlitzTheme.typography.bodyMedium,
-                        color = CodeBlitzTheme.colors.tertiary,
-                    )
-                    Text(
-                        text = "Возможна только одна попытка!",
-                        style = CodeBlitzTheme.typography.bodyMedium,
-                        color = CodeBlitzTheme.colors.secondary
-                    )
-                    Spacer(
-                        modifier = Modifier.height(5.dp)
-                    )
                     ButtonCodeBlitz(
-                        text = if (viewModel.status == "not started") "Начать" else "Продолжить",
+                        text = "Добавить",
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .padding(bottom = 10.dp)
-                            .height(65.dp),
+                            .height(65.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp),
                         textModifier = Modifier.padding(horizontal = 20.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = CodeBlitzTheme.colors.onBackground
                         ),
-                        onClick = { viewModel.navigateToEditor() }
+                        onClick = { viewModel.addNewTask() }
                     )
                 }
             }

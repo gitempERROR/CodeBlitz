@@ -1,8 +1,8 @@
 package com.example.codeblitz.view.ui.theme
 
 import androidx.compose.ui.graphics.Color
-import androidx.core.content.pm.ShortcutInfoCompat.Surface
 
+//Базовые цвета приложения при запуске
 val Background = Color(0xff28242D)
 val Primary = Color(0xffDF3E78)
 val SecondaryContainer = Color(0xffD3CADC)

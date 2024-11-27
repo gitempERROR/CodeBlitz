@@ -41,13 +41,16 @@ import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
 
+//Страница регистрации
 @Composable
 fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewModel()) {
+    //Определение поворота экрана
     val configuration = LocalConfiguration.current
     val vertical = remember {
         derivedStateOf { configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
     }
 
+    //Подписка на события перехода между страницами
     LaunchedEffect(viewModel.navigationStateFlow) {
         viewModel.navigationStateFlow.collect { event ->
             event?.let { controller.navigate(event.route) }
@@ -70,6 +73,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
             ) {
                 Box(
                     modifier = Modifier
+                        //Разная ширина декоративных полос при повороте экрана
                         .weight(3.3f / (if (vertical.value) 1 else (3 / 2)))
                         .fillMaxHeight()
                         .background(color = CodeBlitzTheme.colors.primary)
@@ -79,6 +83,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                 )
                 Box(
                     modifier = Modifier
+                        //Разная ширина декоративных полос при повороте экрана
                         .weight(3.3f / (if (vertical.value) 1 else (3 / 2)))
                         .fillMaxHeight()
                         .background(color = CodeBlitzTheme.colors.primary)
@@ -88,6 +93,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                 )
                 Box(
                     modifier = Modifier
+                        //Разная ширина декоративных полос при повороте экрана
                         .weight(3.3f / (if (vertical.value) 1 else (3 / 2)))
                         .fillMaxHeight()
                         .background(color = CodeBlitzTheme.colors.primary)
@@ -97,6 +103,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                         .fillMaxSize()
                         .weight(27f)
                 ) {
+                    //Отступ сверху только при вертикальном экране
                     if (vertical.value) {
                         Spacer(
                             modifier = Modifier
@@ -109,6 +116,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                             .fillMaxSize()
                             .background(color = CodeBlitzTheme.colors.onBackground)
                     ) {
+                        //Логотип приложения только при вертикальном экране
                         if (vertical.value) {
                             Spacer(
                                 modifier = Modifier.weight(0.03f)
@@ -126,12 +134,14 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                         .toFloat() * ScreenDimensions.getScreenRatio().toFloat()
                                 )
                             )
+                        //Отступ вверху страницы при горизонтальном экране
                         } else {
                             Spacer(
                                 modifier = Modifier.height(30.dp)
                             )
                         }
                         Column(
+                            //Добавление прокрутки для страницы при горизонтальном экране
                             modifier = if (vertical.value) Modifier
                                 .fillMaxSize()
                                 .weight(0.6f)
@@ -142,6 +152,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                     rememberScrollState()
                                 )
                         ) {
+                            //Поле логина
                             TextFieldCodeBlitz(
                                 modifier = Modifier
                                     .padding(horizontal = 15.dp)
@@ -160,6 +171,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                             Spacer(
                                 modifier = Modifier.height(40.dp)
                             )
+                            //Поле пароля
                             TextFieldCodeBlitz(
                                 modifier = Modifier
                                     .padding(horizontal = 15.dp)
@@ -179,6 +191,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                             Spacer(
                                 modifier = Modifier.height(40.dp)
                             )
+                            //Поле подтверждения пароля
                             TextFieldCodeBlitz(
                                 modifier = Modifier
                                     .padding(horizontal = 15.dp)
@@ -195,6 +208,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                     )
                                 }
                             )
+                            //Сообщение об ошибке при неудачной регистрации
                             if (viewModel.isError) {
                                 Spacer(
                                     modifier = Modifier.height(20.dp)
@@ -220,6 +234,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                     )
                                 }
                             }
+                            //Сообщение о некорректной почте
                             if (!viewModel.emailValid) {
                                 Spacer(
                                     modifier = Modifier.height(20.dp)
@@ -245,6 +260,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                     )
                                 }
                             }
+                            //Сообщение о слабом пароле
                             if (viewModel.passwordWeak) {
                                 Spacer(
                                     modifier = Modifier.height(20.dp)
@@ -278,6 +294,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                 }
             }
         }
+        //Отображение горизонтальной белой полосы только при вертикальном экране
         if (vertical.value) {
             Column(
                 modifier = Modifier.zIndex(4f)
@@ -293,6 +310,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                 )
             }
         }
+        //Блоки для корректного отображения фона нижней кнопки
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -360,10 +378,12 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                     .zIndex(4f)
                     .offset(y = 10.dp),
                 text = "Регистрация",
+                //Кнопка регистрации доступна только при выполнении условий корректной почты и пароля
                 enabled = viewModel.isButtonEnabled,
                 onClick = { viewModel.register() }
             )
         }
+        //Кнопка перехода обратно на логин
         IconButtonCodeBlitz(
             modifier = Modifier
                 .size(65.dp)

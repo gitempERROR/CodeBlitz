@@ -1,5 +1,6 @@
 package com.example.codeblitz.domain
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
@@ -15,44 +16,58 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
+//Страница добавления задачи
 @HiltViewModel
 class AddTaskViewModel @Inject constructor() : BaseViewModel() {
+    //Описание задачит
     private val _taskDesc: MutableState<String> = mutableStateOf("")
     val taskDesk: String get() = _taskDesc.value
 
+    //Обновление описания
     fun setTaskDesc(neValue: String) {
         _taskDesc.value = neValue
     }
 
+    //Переход на главную
     fun navigateToMain() {
         _navigationStateFlow.value = Routes.Main
     }
 
+    //Переход в профиль
     fun navigateToProfile() {
         _navigationStateFlow.value = Routes.Profile
     }
 
+    //Функция вставки новой задачи в БД
     fun addNewTask() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val tomorrow = LocalDate.now().plusDays(1)
+                try {
+                    //Получение завтрашней даты
+                    val tomorrow = LocalDate.now().plusDays(1)
 
-                val day: Days? = Constants.supabase.from("days").select() {
-                    filter {
-                        Days::day_date eq tomorrow
-                    }
-                }.decodeSingleOrNull()
+                    //Получение завтрашнего ID
+                    val day: Days? = Constants.supabase.from("days").select() {
+                        filter {
+                            Days::day_date eq tomorrow
+                        }
+                    }.decodeSingleOrNull()
 
-                val newTask = TasksInsert(
-                    day_id = day!!.id,
-                    task_description = _taskDesc.value
-                )
+                    val newTask = TasksInsert(
+                        day_id = day!!.id,
+                        task_description = _taskDesc.value
+                    )
 
-                Constants.supabase.from("tasks").insert(
-                    newTask
-                )
+                    //Вставка задачи
+                    Constants.supabase.from("tasks").insert(
+                        newTask
+                    )
 
-                navigateToMain()
+                    navigateToMain()
+                }
+                catch (e: Exception) {
+                    Log.e("supabase", "error adding task $e")
+                }
             }
         }
     }

@@ -59,6 +59,7 @@ import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.JetBrains
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
+//Страница редактора
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel()) {
@@ -71,9 +72,12 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
         }
     }
 
+    //Переменная определяющая, открыто ли описание задания
     var taskOpened by remember { mutableStateOf(false) }
+    //Переменная для визуализации числа строк в редакторе
     val lineCount by remember { derivedStateOf { countAndFormatNewLines(viewModel.textFieldValue) } }
 
+    //Анимация высоты контейнера с описанием задачи
     val containerHeight by remember { derivedStateOf { if (taskOpened) 800.dp else 85.dp } }
     val animatedContainerHeight by animateDpAsState(
         targetValue = containerHeight,
@@ -81,6 +85,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
+    //Анимация высоты описания задачи
     val height by remember { derivedStateOf { if (taskOpened) 750.dp else 60.dp } }
     val animatedHeight by animateDpAsState(
         targetValue = height,
@@ -88,6 +93,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
+    //Анимация отступов контейнера описания задачи
     val containerPadding by remember { derivedStateOf { if (taskOpened) 20.dp else 0.dp } }
     val animatedContainerPadding by animateDpAsState(
         targetValue = containerPadding,
@@ -95,6 +101,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
+    //Анимация отступов описания задачи
     val padding by remember { derivedStateOf { if (taskOpened) 10.dp else 0.dp } }
     val animatedPadding by animateDpAsState(
         targetValue = padding,
@@ -102,6 +109,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
+    //Анимация поворота иконки
     val rotation by remember { derivedStateOf { if (taskOpened) 180f else 0f } }
     val animatedRotation by animateFloatAsState(
         targetValue = rotation,
@@ -109,9 +117,9 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
+    //Анимация цвета фона при открытии задачи
     val onBackground = CodeBlitzTheme.colors.onBackground
     val background = CodeBlitzTheme.colors.background
-
     val color by remember { derivedStateOf { if (taskOpened) onBackground else background } }
     val animatedColor by animateColorAsState(
         targetValue = color,
@@ -170,6 +178,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
                     tint = CodeBlitzTheme.colors.primary,
                     onClick = { taskOpened = !taskOpened }
                 )
+                //Отображение описания задачи только при раскрытии
                 if (taskOpened) {
                     Text(
                         text = viewModel.desc,
@@ -182,6 +191,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
                             .padding(bottom = 10.dp)
                             .verticalScroll(rememberScrollState())
                     )
+                    //Отображение кнопки выхода только при раскрытом описании
                     IconButtonCodeBlitz(
                         modifier = Modifier
                             .padding(start = 10.dp, bottom = 10.dp)
@@ -243,6 +253,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
                     .padding(top = 50.dp)
                     .verticalScroll(rememberScrollState())
             ) {
+                //Отображение номеров строк
                 Text(
                     text = lineCount,
                     textAlign = TextAlign.Left,
@@ -252,6 +263,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
                         .padding(start = 5.dp)
                         .width(60.dp)
                 )
+                //Основное поле для печати кода
                 val interactionSource = remember { MutableInteractionSource() }
                 BasicTextField(
                     value = viewModel.textFieldValue,
@@ -295,6 +307,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
             }
         }
     }
+    //Отображение всплывающего окна для завершения задач
     if (viewModel.popup) {
         Popup(
             onCloseClick = { viewModel.switchPopup() },
@@ -303,6 +316,7 @@ fun Editor(controller: NavController, viewModel: EditorViewModel = hiltViewModel
     }
 }
 
+//Функция для получения строки с номерами линий
 fun countAndFormatNewLines(input: TextFieldValue): String {
     val newlineCount = input.text.count { it == '\n' || it == '\r' } + 1
 

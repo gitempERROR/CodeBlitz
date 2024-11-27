@@ -2,6 +2,7 @@ package com.example.codeblitz.model
 
 import kotlinx.serialization.Serializable
 
+//Класс с данными для получения и передачи заданий
 @Serializable
 data class Tasks(
     val id: Int,

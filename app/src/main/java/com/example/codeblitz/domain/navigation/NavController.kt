@@ -15,6 +15,7 @@ import com.example.codeblitz.view.MainActivity.components.Settings
 import com.example.codeblitz.view.MainActivity.components.SolvedTask
 import com.example.codeblitz.view.MainActivity.components.TaskDesc
 
+//Навигационный контроллер
 @Composable
 fun NavController(controller: NavHostController) {
     NavHost(

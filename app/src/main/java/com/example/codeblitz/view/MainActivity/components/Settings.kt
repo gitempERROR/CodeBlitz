@@ -28,9 +28,11 @@ import com.example.codeblitz.view.ui.theme.CustomDropDownMenuColors
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
+//Страница настроек
 @Composable
 fun Settings(controller: NavController, viewModel: SettingsViewModel = hiltViewModel()) {
 
+    //Подписка на события перехода между страницами
     LaunchedEffect(
         viewModel.navigationStateFlow
     ) {
@@ -50,6 +52,7 @@ fun Settings(controller: NavController, viewModel: SettingsViewModel = hiltViewM
                 .height(85.dp)
                 .fillMaxWidth()
         ) {
+            //Кнопка перехода в профиль
             TransparentIconButtonCodeBlitz(
                 modifier = Modifier
                     .padding(start = 25.dp, top = 3.dp)
@@ -79,6 +82,7 @@ fun Settings(controller: NavController, viewModel: SettingsViewModel = hiltViewM
                 maxLines = 2,
                 color = CodeBlitzTheme.colors.tertiary
             )
+            //Кнопка перехода на главную страницу
             IconButtonCodeBlitz(
                 modifier = Modifier
                     .padding(end = 25.dp)
@@ -105,6 +109,7 @@ fun Settings(controller: NavController, viewModel: SettingsViewModel = hiltViewM
         Spacer(
             modifier = Modifier.height(20.dp)
         )
+        //Выпадающий список цветов приложения
         CustomDropDownMenuColors(
             modifier = Modifier
                 .fillMaxWidth()

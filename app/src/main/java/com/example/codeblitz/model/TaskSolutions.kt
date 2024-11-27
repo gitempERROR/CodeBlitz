@@ -3,6 +3,7 @@ package com.example.codeblitz.model
 import kotlinx.datetime.LocalTime
 import kotlinx.serialization.Serializable
 
+//Класс с данными для получения и передачи данных о решении
 @Serializable
 data class TaskSolutions(
     val id: Int,

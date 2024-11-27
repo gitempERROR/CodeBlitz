@@ -32,12 +32,14 @@ import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
+//Страница профиля
 @Composable
 fun Profile(
     controller: NavController,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
 
+    //Подписка на события навигации
     LaunchedEffect(
         viewModel.navigationStateFlow
     ) {
@@ -78,6 +80,7 @@ fun Profile(
                     .align(Alignment.CenterStart),
                 iconId = R.drawable.user,
                 modifierIcon = Modifier.padding(5.dp),
+                //Цвет иконки отличается от остальных страниц для обозначения текущей
                 tint = CodeBlitzTheme.colors.secondary
             )
             Text(
@@ -90,6 +93,7 @@ fun Profile(
                 maxLines = 2,
                 color = CodeBlitzTheme.colors.tertiary
             )
+            //Кнопка возврата на главную
             IconButtonCodeBlitz(
                 modifier = Modifier
                     .padding(end = 25.dp)
@@ -106,10 +110,12 @@ fun Profile(
         Spacer(
             modifier = Modifier.height(25.dp)
         )
+        //Поле для изменения имени
         TextFieldCodeBlitz(
             modifier = Modifier
                 .padding(horizontal = 35.dp)
                 .fillMaxWidth()
+                //Сброс значения полей при расфокусе, если не сохранены изменения
                 .onFocusChanged { if (!it.isFocused) viewModel.refreshFields() },
             internalModifier = Modifier
                 .fillMaxWidth()
@@ -130,15 +136,18 @@ fun Profile(
                     viewModel.userData.copy(firstname = newValue)
                 )
             },
+            //Сохранение данных в БД только при нажатии кнопки
             iconOnClick = { viewModel.updateUserData() }
         )
         Spacer(
             modifier = Modifier.height(20.dp)
         )
+        //Поле для изменения фамилии
         TextFieldCodeBlitz(
             modifier = Modifier
                 .padding(horizontal = 35.dp)
                 .fillMaxWidth()
+                //Сброс значения полей при расфокусе, если не сохранены изменения
                 .onFocusChanged { if (!it.isFocused) viewModel.refreshFields() },
             internalModifier = Modifier
                 .fillMaxWidth()
@@ -159,6 +168,7 @@ fun Profile(
                     viewModel.userData.copy(surname = newValue)
                 )
             },
+            //Сохранение данных в БД только при нажатии кнопки
             iconOnClick = { viewModel.updateUserData() }
         )
         Spacer(
@@ -168,6 +178,7 @@ fun Profile(
             modifier = Modifier
                 .padding(horizontal = 35.dp)
                 .fillMaxWidth()
+                //Сброс значения полей при расфокусе, если не сохранены изменения
                 .onFocusChanged { if (!it.isFocused) viewModel.refreshFields() },
             internalModifier = Modifier
                 .fillMaxWidth()
@@ -188,11 +199,13 @@ fun Profile(
                     viewModel.userData.copy(nickname = newValue)
                 )
             },
+            //Сохранение данных в БД только при нажатии кнопки
             iconOnClick = { viewModel.updateUserData() }
         )
         Spacer(
             modifier = Modifier.weight(1f)
         )
+        //Кнопка выхода из аккаунта
         ButtonCodeBlitz(
             text = "Выйти",
             modifier = Modifier

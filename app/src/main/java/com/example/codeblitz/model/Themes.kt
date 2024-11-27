@@ -2,6 +2,7 @@ package com.example.codeblitz.model
 
 import kotlinx.serialization.Serializable
 
+//Темы с цветами в формате строк
 @Serializable
 data class Themes(
     val id: Int,

@@ -32,8 +32,10 @@ import com.example.codeblitz.view.ui.theme.CustomDropDownMenu
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
+//Экран таблицы лидеров
 @Composable
 fun Leaderboard(controller: NavController, viewModel: LeaderboardViewModel = hiltViewModel()) {
+    //Подписка на события навигации
     LaunchedEffect(
         viewModel.navigationStateFlow
     ) {
@@ -73,6 +75,7 @@ fun Leaderboard(controller: NavController, viewModel: LeaderboardViewModel = hil
                 onClick = { viewModel.navigateToProfile() }
             )
             Text(
+                //Разный заголовок страницы в зависимости от роли
                 text = if (CurrentUser.isAdmin) "Проверка решений" else "Таблица лидеров",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -104,6 +107,7 @@ fun Leaderboard(controller: NavController, viewModel: LeaderboardViewModel = hil
                 .fillMaxWidth()
                 .height(80.dp)
         ) {
+            //Для администратора не доступен фильтр по дням, так как идёт проверка решений за текущий день, также убрана надпись "Фильтры"
             if (!CurrentUser.isAdmin)
                 Text(
                     text = "Фильтры",
@@ -115,6 +119,7 @@ fun Leaderboard(controller: NavController, viewModel: LeaderboardViewModel = hil
                 )
             CustomDropDownMenu(
                 modifier = Modifier
+                    //Другое расположения для администратора
                     .align(if (CurrentUser.isAdmin) Alignment.CenterEnd else Alignment.TopEnd),
                 selectedText = viewModel.selectedOptionTask,
                 options = viewModel.optionsTask,
@@ -122,6 +127,7 @@ fun Leaderboard(controller: NavController, viewModel: LeaderboardViewModel = hil
                 dividerColor = CodeBlitzTheme.colors.onBackground,
                 onOptionSelected = { viewModel.updateFilters() }
             )
+            //Для администратора не доступен фильтр по дням, так как идёт проверка решений за текущий день, также убрана надпись "Фильтры"
             if (!CurrentUser.isAdmin)
                 CustomDropDownMenu(
                     modifier = Modifier
@@ -134,6 +140,7 @@ fun Leaderboard(controller: NavController, viewModel: LeaderboardViewModel = hil
                 )
             CustomDropDownMenu(
                 modifier = Modifier
+                    //Другое расположения для администратора
                     .align(if (CurrentUser.isAdmin) Alignment.CenterStart else Alignment.BottomEnd),
                 selectedText = viewModel.selectedOptionLang,
                 options = viewModel.optionsLang,

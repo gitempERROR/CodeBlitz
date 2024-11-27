@@ -18,25 +18,33 @@ import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+//ViewModel страницы входа
 @HiltViewModel
 class LoginViewModel @Inject constructor() : BaseViewModel() {
+    //Данные для входа
     private val _loginData: MutableState<LoginData> = mutableStateOf(LoginData("", ""))
+    //Доступность кнопки
     private val _isButtonEnabled =
         derivedStateOf { _loginData.value.login.isNotBlank() && _loginData.value.password.isNotBlank() }
+    //Отображение ошибки
     private var _isError = mutableStateOf(false)
 
+    //Свойства для получения данных
     val loginData: LoginData get() = _loginData.value
     val isButtonEnabled: Boolean get() = _isButtonEnabled.value
     val isError: Boolean get() = _isError.value
 
+    //Обновление данных для входа
     fun updateLoginData(newLoginData: LoginData) {
         _loginData.value = newLoginData
     }
 
+    //Переход к регистрации
     fun navigateToRegister() {
         _navigationStateFlow.value = Routes.Register
     }
 
+    //Функция входа
     fun login() {
         viewModelScope.launch {
             try {
@@ -44,8 +52,11 @@ class LoginViewModel @Inject constructor() : BaseViewModel() {
                     email = loginData.login
                     password = loginData.password
                 }
+                //Получение данных пользователя
                 getUserData()
+                //Переход на главную
                 _navigationStateFlow.value = Routes.Main
+                //Установка темы
                 setTheme()
             } catch (e: Exception) {
                 Log.e("auth", "$e")
@@ -54,6 +65,7 @@ class LoginViewModel @Inject constructor() : BaseViewModel() {
         }
     }
 
+    //Функция получения данных о пользователе (подробнее комментарии в RegisterViewModel)
     private suspend fun getUserData() {
         try {
             val userId = Constants.supabase.auth.currentUserOrNull()!!.id

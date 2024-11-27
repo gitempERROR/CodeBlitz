@@ -1,5 +1,6 @@
 package com.example.codeblitz.domain
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -20,14 +21,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+//ViewModel настроек
 @HiltViewModel
 class SettingsViewModel @Inject constructor() : BaseViewModel() {
+    //Поле списка тем
     private val _themeList: MutableState<MutableList<Themes>> = mutableStateOf(mutableListOf())
+    //Поле выбранной темы
     private var _selectedTheme: MutableState<Themes?> = mutableStateOf(null)
 
+    //Поле вариантов для выпадающего списка
     val options: MutableList<ColorScheme> = mutableListOf()
+    //Выбранный вариант выпадающего списка
     val selectedOption: MutableState<ColorScheme?> = mutableStateOf(null)
 
+    //Преобразование текстовых значений цветов к цветам приложения
     private fun setOptions(
         selectedTheme: Themes
     ) {
@@ -47,54 +54,72 @@ class SettingsViewModel @Inject constructor() : BaseViewModel() {
         selectedOption.value = options.find { it.name == selectedTheme.theme_name }
     }
 
+    //Навигация в профиль
     fun navigateToProfile() {
         _navigationStateFlow.value = Routes.Profile
     }
 
+    //Навигация на главную
     fun navigateToMain() {
         _navigationStateFlow.value = Routes.Main
     }
 
+    //Смена темы
     fun changeTheme(newTheme: ColorScheme) {
+        //Смена темы в приложении
         CodeBlitzTheme.changeTheme(newTheme)
 
+        //Смена выбранной темы
         _selectedTheme.value = _themeList.value.find { it.theme_name == newTheme.name }
 
+        //Запись информации о смене темы в БД
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val userSettings = SettingsData(
-                    selected_theme = _selectedTheme.value!!.id,
-                    user_id = CurrentUser.userData!!.id
-                )
-                Constants.supabase.from("user_settings").update(
-                    userSettings
-                ) {
-                    filter {
-                        SettingsData::user_id eq CurrentUser.userData!!.id
+            try {
+                withContext(Dispatchers.IO) {
+                    val userSettings = SettingsData(
+                        selected_theme = _selectedTheme.value!!.id,
+                        user_id = CurrentUser.userData!!.id
+                    )
+                    Constants.supabase.from("user_settings").update(
+                        userSettings
+                    ) {
+                        filter {
+                            SettingsData::user_id eq CurrentUser.userData!!.id
+                        }
                     }
                 }
+            }
+            catch (e: Exception) {
+                Log.e("supabase", "error inserting theme: $e")
             }
         }
     }
 
     init {
+        //Запись Списка тем и выбранной темы
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                _themeList.value = Constants.supabase.from("themes")
-                    .select {
-                        order(column = "id", order = Order.ASCENDING)
-                    }
-                    .decodeList<Themes>()
-                    .toMutableList()
-                val settings: SettingsData? = Constants.supabase.from("user_settings")
-                    .select {
-                        filter {
-                            SettingsData::user_id eq CurrentUser.userData!!.id
+                try {
+                    _themeList.value = Constants.supabase.from("themes")
+                        .select {
+                            order(column = "id", order = Order.ASCENDING)
                         }
-                    }.decodeSingleOrNull()
-                _selectedTheme.value =
-                    if (settings!!.selected_theme != null) _themeList.value.find { it.id == settings.selected_theme } else _themeList.value[0]
-                _selectedTheme.value?.let { setOptions(it) }
+                        .decodeList<Themes>()
+                        .toMutableList()
+                    val settings: SettingsData? = Constants.supabase.from("user_settings")
+                        .select {
+                            filter {
+                                SettingsData::user_id eq CurrentUser.userData!!.id
+                            }
+                        }.decodeSingleOrNull()
+                    _selectedTheme.value =
+                            //Установка темы по умолчанию
+                        if (settings!!.selected_theme != null) _themeList.value.find { it.id == settings.selected_theme } else _themeList.value[0]
+                    _selectedTheme.value?.let { setOptions(it) }
+                }
+                catch (e: Exception) {
+                    Log.e("supabase", "error setting theme: $e")
+                }
             }
         }
     }

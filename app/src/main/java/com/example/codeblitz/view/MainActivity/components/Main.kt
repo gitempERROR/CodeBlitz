@@ -38,8 +38,10 @@ import com.example.codeblitz.domain.utils.CurrentUser
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
+//Главная страница
 @Composable
 fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) {
+    //Подписка на события навигации
     LaunchedEffect(
         viewModel.navigationStateFlow
     ) {
@@ -71,6 +73,7 @@ fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) 
                 .height(85.dp)
                 .fillMaxWidth()
         ) {
+            //Кнопка перехода в профиль
             TransparentIconButtonCodeBlitz(
                 modifier = Modifier
                     .padding(start = 25.dp, top = 3.dp)
@@ -109,6 +112,7 @@ fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) 
                 contentDescription = ""
             )
         }
+        //Другая генерация блоков при входе от администратора
         if (CurrentUser.isAdmin) {
             var count: Int by remember { mutableIntStateOf(0) }
             Column(
@@ -126,8 +130,10 @@ fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) 
                         id = task.id,
                         status = task.task_status
                     )
+                    //Подсчет количества сгенерированных заполненных блоков
                     count += 1
                 }
+                //Генерация пустых блоков с кнопкой добавления
                 while (count < 2) {
                     EmptyTaskElement(
                         controller = controller
@@ -136,6 +142,7 @@ fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) 
                 }
             }
         } else {
+            //Стандартная генерация блоков с задачами при входе от пользователя
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()

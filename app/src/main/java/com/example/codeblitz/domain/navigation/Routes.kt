@@ -1,5 +1,6 @@
 package com.example.codeblitz.domain.navigation
 
+//Пути к страницам + навигационные аргументы
 sealed class Routes(val route: String) {
     data object Main        : Routes("Main")
 

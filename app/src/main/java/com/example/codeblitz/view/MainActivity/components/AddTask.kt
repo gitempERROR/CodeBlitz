@@ -31,8 +31,10 @@ import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
+//Страница добавления задания для администратора
 @Composable
 fun AddTask(controller: NavController, viewModel: AddTaskViewModel = hiltViewModel()) {
+    //Подписка на события навигации
     LaunchedEffect(
         viewModel.navigationStateFlow
     ) {
@@ -165,6 +167,7 @@ fun AddTask(controller: NavController, viewModel: AddTaskViewModel = hiltViewMod
                     Spacer(
                         modifier = Modifier.height(5.dp)
                     )
+                    //Кнопка добавления задания
                     ButtonCodeBlitz(
                         text = "Добавить",
                         modifier = Modifier

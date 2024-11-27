@@ -1,5 +1,6 @@
 package com.example.codeblitz.domain
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
@@ -20,6 +21,7 @@ import java.util.Date
 import javax.inject.Inject
 import kotlin.math.round
 
+//ViewModel таблицы лидеров
 @HiltViewModel
 class LeaderboardViewModel @Inject constructor() : BaseViewModel() {
     val optionsTask: MutableList<String> = mutableListOf("Задание 1", "Задание 2")
@@ -98,67 +100,81 @@ class LeaderboardViewModel @Inject constructor() : BaseViewModel() {
         var dayFilter: Days? = days.find { it.day_date.toString() == selectedOptionDate.value }
         val langFilter: Languages? = languages.find { it.language_name == selectedOptionLang.value }
 
-        if (CurrentUser.isAdmin) {
-            dayFilter = Constants.supabase.from("days").select() {
+        try {
+            if (CurrentUser.isAdmin) {
+                dayFilter = Constants.supabase.from("days").select() {
+                    filter {
+                        Days::day_date eq Date()
+                    }
+                }.decodeSingleOrNull()
+            }
+
+            val task: Tasks? = Constants.supabase.from("tasks").select() {
                 filter {
-                    Days::day_date eq Date()
+                    if (dayFilter != null) {
+                        Tasks::day_id eq dayFilter.id
+                    }
+                    Tasks::day_task_id eq dayTask[selectedOptionTask.value]
                 }
             }.decodeSingleOrNull()
-        }
 
-        val task: Tasks = Constants.supabase.from("tasks").select() {
-            filter {
-                if (dayFilter != null) {
-                    Tasks::day_id eq dayFilter.id
+            val list = Constants.supabase.from("task_solutions").select(
+                columns = columns
+            ) {
+                filter {
+                    if (task != null) {
+                        TaskSolutions::task_id eq task.id
+                    }
+                    TaskSolutions::language_id eq langFilter!!.id
                 }
-                Tasks::day_task_id eq dayTask[selectedOptionTask.value]
+            }.decodeList<TaskSolutions>().toMutableList()
+
+            val sortedList: MutableList<TaskSolutions> = mutableListOf()
+
+            list.forEach { item ->
+                val difference = item.end_time!!.toSecondOfDay() - item.start_time!!.toSecondOfDay()
+                item.spent_time = round((difference / 60f) * 100) / 100f
+                if (task != null) {
+                    item.task_desc = task.task_description
+                }
+                if (task != null) {
+                    item.task_title = if (task.day_task_id == 1) "Задание 1" else "Задание 2"
+                }
+                item.date = selectedOptionDate.value
+                if (item.current_status.status_name == "approved"
+                    || (item.current_status.status_name == "solved" && CurrentUser.isAdmin)
+                )
+                    sortedList.add(item)
             }
-        }.decodeSingle()
 
-        val list = Constants.supabase.from("task_solutions").select(
-            columns = columns
-        ) {
-            filter {
-                TaskSolutions::task_id eq task.id
-                TaskSolutions::language_id eq langFilter!!.id
+            sortedList.sortBy { it.spent_time }
+
+            sortedList.forEachIndexed { id, _ ->
+                sortedList[id].place = id + 1
             }
-        }.decodeList<TaskSolutions>().toMutableList()
 
-        val sortedList: MutableList<TaskSolutions> = mutableListOf()
-
-        list.forEach { item ->
-            val difference = item.end_time!!.toSecondOfDay() - item.start_time!!.toSecondOfDay()
-            item.spent_time = round((difference / 60f) * 100) / 100f
-            item.task_desc = task.task_description
-            item.task_title = if (task.day_task_id == 1) "Задание 1" else "Задание 2"
-            item.date = selectedOptionDate.value
-            if (item.current_status.status_name == "approved"
-                || (item.current_status.status_name == "solved" && CurrentUser.isAdmin)
-            )
-                sortedList.add(item)
+            solutionsList.value = sortedList
+        } catch (e: Exception) {
+            Log.e("supabase", "updateTask: $e")
         }
-
-        sortedList.sortBy { it.spent_time }
-
-        sortedList.forEachIndexed { id, _ ->
-            sortedList[id].place = id + 1
-        }
-
-        solutionsList.value = sortedList
     }
 
     init {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                days = Constants.supabase.from("days")
-                    .select()
-                    .decodeList()
+                try {
+                    days = Constants.supabase.from("days")
+                        .select()
+                        .decodeList()
 
-                languages = Constants.supabase.from("languages")
-                    .select()
-                    .decodeList()
-                setFilters()
-                updateTasks()
+                    languages = Constants.supabase.from("languages")
+                        .select()
+                        .decodeList()
+                    setFilters()
+                    updateTasks()
+                } catch (e: Exception) {
+                    Log.e("supabase", "Error getting filters: $e")
+                }
             }
         }
     }

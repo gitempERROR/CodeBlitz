@@ -39,12 +39,15 @@ import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.TextFieldCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentButtonCodeBlitz
 
+//Страница входа
 @Composable
 fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewModel()) {
+    //Получение ориентации экрана
     val configuration = LocalConfiguration.current
     val vertical = remember {
         derivedStateOf { configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
     }
+    //Подписка на события навигации
     LaunchedEffect(
         viewModel.navigationStateFlow
     ) {
@@ -69,24 +72,27 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
             ) {
                 Box(
                     modifier = Modifier
+                        //Разная ширина декоративных полос при повороте экрана
                         .weight(3.3f / (if (vertical.value) 1 else (3 / 2)))
                         .fillMaxHeight()
                         .background(color = CodeBlitzTheme.colors.primary)
                 )
                 Spacer(
-                    modifier = Modifier.weight(1.2f / (if (vertical.value) 1 else (3/2)))
+                    modifier = Modifier.weight(1.2f / (if (vertical.value) 1 else (3 / 2)))
                 )
                 Box(
                     modifier = Modifier
+                        //Разная ширина декоративных полос при повороте экрана
                         .weight(3.3f / (if (vertical.value) 1 else (3 / 2)))
                         .fillMaxHeight()
                         .background(color = CodeBlitzTheme.colors.primary)
                 )
                 Spacer(
-                    modifier = Modifier.weight(1.2f / (if (vertical.value) 1 else (3/2)))
+                    modifier = Modifier.weight(1.2f / (if (vertical.value) 1 else (3 / 2)))
                 )
                 Box(
                     modifier = Modifier
+                        //Разная ширина декоративных полос при повороте экрана
                         .weight(3.3f / (if (vertical.value) 1 else (3 / 2)))
                         .fillMaxHeight()
                         .background(color = CodeBlitzTheme.colors.primary)
@@ -96,6 +102,7 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                         .fillMaxSize()
                         .weight(27f)
                 ) {
+                    //Отступ вверху только при вертикальном экране
                     if (vertical.value) {
                         Spacer(
                             modifier = Modifier
@@ -108,6 +115,7 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                             .fillMaxSize()
                             .background(color = CodeBlitzTheme.colors.onBackground)
                     ) {
+                        //Логотип приложения только при вертикальном экране
                         if (vertical.value) {
                             Spacer(
                                 modifier = Modifier.weight(0.03f)
@@ -123,12 +131,14 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                                 modifier = Modifier.weight(0.1f)
                             )
                         }
+                        //Отступ вверху страницы при горизонтальном экране
                         else {
                             Spacer(
                                 modifier = Modifier.height(30.dp)
                             )
                         }
                         Column(
+                            //Добавление прокрутки для страницы при горизонтальном экране
                             modifier = if (vertical.value) Modifier
                                 .fillMaxSize()
                                 .weight(0.6f)
@@ -139,6 +149,7 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                                     rememberScrollState()
                                 )
                         ) {
+                            //Поле логина
                             TextFieldCodeBlitz(
                                 modifier = Modifier
                                     .padding(horizontal = 15.dp)
@@ -157,6 +168,7 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                             Spacer(
                                 modifier = Modifier.height(40.dp)
                             )
+                            //Поле пароля
                             TextFieldCodeBlitz(
                                 modifier = Modifier
                                     .padding(horizontal = 15.dp)
@@ -176,6 +188,7 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                             Spacer(
                                 modifier = Modifier.height(20.dp)
                             )
+                            //Кнопка перехода на окно регистрации
                             TransparentButtonCodeBlitz(
                                 text = "Зарегистрироваться",
                                 modifier = Modifier
@@ -186,6 +199,7 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                             Spacer(
                                 modifier = Modifier.height(12.dp)
                             )
+                            //Отображение сообщения о некорректных данных при ошибке входа
                             if (viewModel.isError) {
                                 Box(
                                     modifier = Modifier
@@ -216,6 +230,7 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                 }
             }
         }
+        //Отображение горизонтальной полосы вверху экрана только при вертикальном экране
         if (vertical.value) {
             Column(
                 modifier = Modifier.zIndex(4f)
@@ -231,6 +246,7 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                 )
             }
         }
+        //Блоки для корректного отображения кнопки входа
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -289,6 +305,7 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                 .align(Alignment.BottomCenter)
                 .zIndex(4f)
         ){
+            //Кнопка входа
             ButtonCodeBlitz(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -299,6 +316,7 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                     .offset(y = 10.dp),
                 text = "Вход",
                 onClick = { viewModel.login() },
+                //Кнопка доступна только если заполнены поля
                 enabled = viewModel.isButtonEnabled
             )
         }

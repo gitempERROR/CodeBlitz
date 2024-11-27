@@ -26,6 +26,7 @@ import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
+//Нижняя панель с кнопками навигации
 @Composable
 fun BottomBar(
     controller: NavController

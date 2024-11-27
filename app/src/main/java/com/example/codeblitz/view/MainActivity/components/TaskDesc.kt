@@ -32,16 +32,20 @@ import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
+//Страница с описанием задачи
 @Composable
 fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewModel()) {
+    //Подписка на переходы между страницами
     LaunchedEffect(
         viewModel.navigationStateFlow
     ) {
         viewModel.navigationStateFlow.collect { event ->
             event?.let {
+                //Обычный переход в случае если страница не требует аргументов
                 if (event.route != Routes.Profile.route && event.route != Routes.Editor.route)
                     controller.navigate(event.route)
                 else if (event.route == Routes.Editor.route) {
+                    //Передача параметров для редактора при переходе
                     controller.navigate(
                         "Editor"
                                 + "/${viewModel.title}"
@@ -73,6 +77,7 @@ fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewM
                 .height(85.dp)
                 .fillMaxWidth()
         ) {
+            //Кнопка перехода в профиль
             TransparentIconButtonCodeBlitz(
                 modifier = Modifier
                     .padding(start = 25.dp, top = 3.dp)
@@ -92,6 +97,7 @@ fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewM
                 tint = CodeBlitzTheme.colors.primary,
                 onClick = { viewModel.navigateToProfile() }
             )
+            //Блок с названием задания
             Box(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -118,6 +124,7 @@ fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewM
                     color = CodeBlitzTheme.colors.tertiary
                 )
             }
+            //Кнопка перехода на главную страницу
             IconButtonCodeBlitz(
                 modifier = Modifier
                     .padding(end = 25.dp, top = 3.dp)
@@ -194,6 +201,7 @@ fun TaskDesc(controller: NavController, viewModel: TaskDescViewModel = hiltViewM
                     Spacer(
                         modifier = Modifier.height(5.dp)
                     )
+                    //Разный текст у кнопки в зависимости от статуса задачи
                     ButtonCodeBlitz(
                         text = if (viewModel.status == "not started") "Начать" else "Продолжить",
                         modifier = Modifier

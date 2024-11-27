@@ -2,6 +2,7 @@ package com.example.codeblitz.model
 
 import kotlinx.serialization.Serializable
 
+//Данные пользователей
 @Serializable
 data class UserData(
     val id: String,

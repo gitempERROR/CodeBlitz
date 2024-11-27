@@ -1,5 +1,6 @@
 package com.example.codeblitz.domain
 
+import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.ViewModel
@@ -20,37 +21,45 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+//базовый ViewModel
 open class BaseViewModel : ViewModel() {
+    //Поток навигации
     protected val _navigationStateFlow: MutableStateFlow<Routes?> = MutableStateFlow(null)
     val navigationStateFlow: StateFlow<Routes?> = _navigationStateFlow.asStateFlow()
 
+    //Функция установки темы приложения
     fun setTheme() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val themes = Constants.supabase.from("themes")
-                    .select {
-                        order(column = "id", order = Order.ASCENDING)
-                    }
-                    .decodeList<Themes>()
-                val settings: SettingsData? = Constants.supabase.from("user_settings")
-                    .select {
-                        filter {
-                            SettingsData::user_id eq CurrentUser.userData!!.id
+                try {
+                    val themes = Constants.supabase.from("themes")
+                        .select {
+                            order(column = "id", order = Order.ASCENDING)
                         }
-                    }.decodeSingleOrNull()
-                val selectedTheme =
-                    if (settings!!.selected_theme != null) themes.find { it.id == settings.selected_theme } else themes[0]
+                        .decodeList<Themes>()
+                    val settings: SettingsData? = Constants.supabase.from("user_settings")
+                        .select {
+                            filter {
+                                SettingsData::user_id eq CurrentUser.userData!!.id
+                            }
+                        }.decodeSingleOrNull()
+                    val selectedTheme =
+                        if (settings!!.selected_theme != null) themes.find { it.id == settings.selected_theme } else themes[0]
 
-                val selectedColorScheme = ColorScheme(
-                    name = selectedTheme!!.theme_name,
-                    background = Color(selectedTheme.color_1.toColorInt()),
-                    primary = Color(selectedTheme.color_2.toColorInt()),
-                    secondaryContainer = Color(selectedTheme.color_3.toColorInt()),
-                    tertiary = Color(selectedTheme.color_4.toColorInt()),
-                    secondary = Color(selectedTheme.color_5.toColorInt()),
-                    onBackground = Color(selectedTheme.color_6.toColorInt())
-                )
-                CodeBlitzTheme.changeTheme(selectedColorScheme)
+                    val selectedColorScheme = ColorScheme(
+                        name = selectedTheme!!.theme_name,
+                        background = Color(selectedTheme.color_1.toColorInt()),
+                        primary = Color(selectedTheme.color_2.toColorInt()),
+                        secondaryContainer = Color(selectedTheme.color_3.toColorInt()),
+                        tertiary = Color(selectedTheme.color_4.toColorInt()),
+                        secondary = Color(selectedTheme.color_5.toColorInt()),
+                        onBackground = Color(selectedTheme.color_6.toColorInt())
+                    )
+                    CodeBlitzTheme.changeTheme(selectedColorScheme)
+                }
+                catch (e: Exception) {
+                    Log.e("supabase", "error setting theme $e")
+                }
             }
         }
     }

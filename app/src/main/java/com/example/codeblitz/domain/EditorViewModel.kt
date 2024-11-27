@@ -30,27 +30,37 @@ import kotlinx.coroutines.withContext
 import kotlinx.datetime.LocalTime
 import javax.inject.Inject
 
+//ViewModel редактора
 @HiltViewModel
 class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : BaseViewModel() {
+    //Статус решения
     private val _status: MutableState<String> = mutableStateOf("")
 
+    //Отображение всплывающего окна
     private val _popup: MutableState<Boolean> = mutableStateOf(false)
     val popup: Boolean get() = _popup.value
 
+    //Отображение заголовка
     private val _title: MutableState<String> = mutableStateOf("")
     val title: String get() = _title.value
 
+    //Отображение описания
     private val _desc: MutableState<String> = mutableStateOf("")
     val desc: String get() = _desc.value
 
+    //Id решения
     private val _id: MutableState<String> = mutableStateOf("")
     val id: String get() = _id.value
 
+    //Время начала решения
     private lateinit var startTime: LocalTime
 
+    //Список языков из БД
     private val _languageList: MutableState<List<Languages>> = mutableStateOf(mutableListOf())
+    //Выбранный язык из БД
     private var _selectedLanguage: MutableState<Languages?> = mutableStateOf(null)
 
+    //Словарь языков к стилям подсветки
     private val _languagesStyles = mapOf(
         "Python" to CodeLang.Python,
         "GO" to CodeLang.Go,
@@ -59,12 +69,15 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
         "C++" to CodeLang.CPP
     )
 
+    //Выбранный стиль подсветки
     private var _selectedLanguageStyle = _languagesStyles["Python"]
 
+    //Объекты для аннотации строки
     private val parser = PrettifyParser()
     private var themeState by mutableStateOf(CodeThemeType.Monokai)
     val theme = themeState.theme()
 
+    //Значение текстового поля
     private var _textFieldValue = mutableStateOf(
         TextFieldValue(
             annotatedString = parseCodeAsAnnotatedString(
@@ -77,9 +90,11 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
     )
     val textFieldValue get() = _textFieldValue.value
 
+    //Список языков для выпадающего списка
     val options: MutableList<String> = mutableListOf()
     val selectedOption: MutableState<String> = mutableStateOf("Python")
 
+    //Создание новой аннотированной строки при написании кода
     fun changeCode(newValue: TextFieldValue) {
         _textFieldValue.value = newValue.copy(
             annotatedString = parseCodeAsAnnotatedString(
@@ -91,10 +106,12 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
         )
     }
 
+    //Переключение всплывающего окна
     fun switchPopup() {
         _popup.value = !_popup.value
     }
 
+    //Установка другого языка
     fun setSelectedLanguage(languageName: String) {
         selectedOption.value = languageName
         _languageList.value.forEach { item ->
@@ -106,11 +123,14 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
         }
     }
 
+    //Завершение задачи
     fun endTask() {
+        //Статус - решенная
         _status.value = "solved"
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
+                    //Получение id решения
                     val solutionStatus: SolutionStatuses =
                         Constants.supabase.from("solution_statuses")
                             .select {
@@ -129,6 +149,7 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                         end_time = currentTime()
                     )
 
+                    //Обновление решения в БД
                     Constants.supabase.from("task_solutions").update(
                         solution
                     ) {
@@ -142,15 +163,18 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                 }
             }
         }
+        //Переход на главную
         _navigationStateFlow.value = Routes.Main
     }
 
     init {
+        //Получение аргументов навигации
         _status.value = savedStateHandle.get<String>("status")!!
         _title.value = savedStateHandle.get<String>("title")!!
         _desc.value = savedStateHandle.get<String>("desc")!!
         _id.value = savedStateHandle.get<String>("id")!!
 
+        //Получение списка языков и id статуса решения
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 try {
@@ -187,6 +211,7 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                             end_time
                         """.trimIndent()
                         )
+                        //id статуса решения
                         val solution: TaskSolutions = Constants.supabase.from("task_solutions")
                             .select(
                                 columns = columns
@@ -196,8 +221,12 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                                     TaskSolutions::task_id eq _id.value
                                 }
                             }.decodeSingle()
+                        //Ниже идет получение данных уже начатого решения
+                        //Получение времени начала
                         startTime = solution.start_time!!
+                        //Установка языка решения
                         setSelectedLanguage(solution.language_id.language_name)
+                        //Установка кода из решения
                         changeCode(
                             _textFieldValue.value.copy(
                                 annotatedString = parseCodeAsAnnotatedString(
@@ -212,8 +241,9 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                         Log.e("supabase", "get solution error $e")
                     }
 
-
+                    //Постоянное обновление решения в БД на случай закрытия
                     while (true) {
+                        //Выход из цикла при завершении решения
                         if (_status.value == "solved") break
                         Thread.sleep(5000)
                         if (_status.value == "solved") break
@@ -223,13 +253,18 @@ class EditorViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : 
                             currentTime()
                         )
                         if (_status.value == "solved") break
-                        Constants.supabase.from("task_solutions").update(
-                            solution
-                        ) {
-                            filter {
-                                TaskSolutions::user_id eq CurrentUser.userData!!.id
-                                TaskSolutions::task_id eq _id.value
+                        try {
+                            Constants.supabase.from("task_solutions").update(
+                                solution
+                            ) {
+                                filter {
+                                    TaskSolutions::user_id eq CurrentUser.userData!!.id
+                                    TaskSolutions::task_id eq _id.value
+                                }
                             }
+                        }
+                        catch(e: Exception) {
+                            Log.e("supabase", "error updating solution $e")
                         }
                     }
                 } catch (e: Exception) {

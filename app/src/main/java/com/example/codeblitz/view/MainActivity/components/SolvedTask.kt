@@ -62,14 +62,17 @@ import com.example.codeblitz.view.ui.theme.IconButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.JetBrains
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
+//Страница просмотра завершенного решения задачи
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltViewModel()) {
+    //Определение поворота экрана
     val configuration = LocalConfiguration.current
     val vertical = remember {
         derivedStateOf { configuration.orientation == Configuration.ORIENTATION_PORTRAIT }
     }
 
+    //Подписка на события перехода между страницами
     LaunchedEffect(
         viewModel.navigationStateFlow
     ) {
@@ -78,7 +81,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
         }
     }
 
-    var textFieldValue by remember {
+    val textFieldValue by remember {
         mutableStateOf(
             TextFieldValue(
                 annotatedString = viewModel.code
@@ -86,9 +89,12 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
         )
     }
 
+    //Переменная определяющая, открыто ли описание задания
     var taskOpened by remember { mutableStateOf(false) }
+    //Переменная для визуализации числа строк в редакторе
     val lineCount by remember { derivedStateOf { countAndFormatNewLines(textFieldValue) } }
 
+    //Анимация высоты контейнера с описанием задачи
     val containerHeight by remember { derivedStateOf { if (taskOpened) 800.dp else 85.dp } }
     val animatedContainerHeight by animateDpAsState(
         targetValue = containerHeight,
@@ -96,6 +102,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
+    //Анимация высоты описания задачи
     val height by remember { derivedStateOf { if (taskOpened) 750.dp else 60.dp } }
     val animatedHeight by animateDpAsState(
         targetValue = height,
@@ -103,6 +110,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
+    //Анимация отступов контейнера описания задачи
     val containerPadding by remember { derivedStateOf { if (taskOpened) 20.dp else 0.dp } }
     val animatedContainerPadding by animateDpAsState(
         targetValue = containerPadding,
@@ -110,6 +118,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
+    //Анимация отступов описания задачи
     val padding by remember { derivedStateOf { if (taskOpened) 10.dp else 0.dp } }
     val animatedPadding by animateDpAsState(
         targetValue = padding,
@@ -117,6 +126,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
+    //Анимация поворота иконки
     val rotation by remember { derivedStateOf { if (taskOpened) 180f else 0f } }
     val animatedRotation by animateFloatAsState(
         targetValue = rotation,
@@ -124,15 +134,16 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
 
+    //Анимация цвета фона при открытии задачи
     val onBackground = CodeBlitzTheme.colors.onBackground
     val background = CodeBlitzTheme.colors.background
-
     val color by remember { derivedStateOf { if (taskOpened) onBackground else background } }
     val animatedColor by animateColorAsState(
         targetValue = color,
         label = "color",
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
+
     Box(
         modifier = Modifier
             .height(animatedContainerHeight)
@@ -176,6 +187,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                     maxLines = 2,
                     color = CodeBlitzTheme.colors.tertiary
                 )
+                //Поворачивающаяся иконка
                 TransparentIconButtonCodeBlitz(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -185,6 +197,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                     tint = CodeBlitzTheme.colors.primary,
                     onClick = { taskOpened = !taskOpened }
                 )
+                //Отображение описания задачи только при раскрытии
                 if (taskOpened) {
                     Text(
                         text = viewModel.desc,
@@ -197,6 +210,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                             .padding(bottom = 10.dp)
                             .verticalScroll(rememberScrollState())
                     )
+                    //Отображение кнопки выхода только при раскрытом описании
                     IconButtonCodeBlitz(
                         modifier = Modifier
                             .padding(start = 10.dp, bottom = 10.dp)
@@ -253,6 +267,9 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                     )
                     .padding(horizontal = 5.dp)
             ) {
+                //Блоки с информацией о решении
+
+                //Отображение никнейма и даты только при входе под обычным пользователем
                 if (!CurrentUser.isAdmin)
                     Text(
                         text = viewModel.nickname,
@@ -283,6 +300,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
                     color = CodeBlitzTheme.colors.tertiary,
                     textAlign = TextAlign.Right
                 )
+                //Отображение никнейма и даты только при входе под обычным пользователем
                 if (!CurrentUser.isAdmin)
                     Text(
                         text = viewModel.date,
@@ -393,6 +411,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
             )
         }
     }
+    //Отображение кнопок изменения статуса решения при входе под администратором
     if (CurrentUser.isAdmin) {
         Column(
             modifier = Modifier

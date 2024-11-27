@@ -21,6 +21,7 @@ import com.example.codeblitz.R
 import com.example.codeblitz.domain.navigation.Routes
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 
+//Пустой элемент задачи, отображаемый для администратора, чтобы тот мог добавить задачу
 @Composable
 fun EmptyTaskElement(
     controller: NavController,

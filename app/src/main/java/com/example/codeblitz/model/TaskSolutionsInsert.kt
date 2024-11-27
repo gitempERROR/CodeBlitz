@@ -3,6 +3,7 @@ package com.example.codeblitz.model
 import kotlinx.datetime.LocalTime
 import kotlinx.serialization.Serializable
 
+//Класс с данными для выполнения команды Insert решения
 @Serializable
 data class TaskSolutionsInsert(
     val user_id: String,

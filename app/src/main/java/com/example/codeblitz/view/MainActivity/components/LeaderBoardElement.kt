@@ -23,6 +23,7 @@ import com.example.codeblitz.domain.utils.CurrentUser
 import com.example.codeblitz.model.TaskSolutions
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 
+//Элемент таблицы лидеров
 @Composable
 fun LeaderBoardElement(
     place: Int = 0,
@@ -41,6 +42,7 @@ fun LeaderBoardElement(
                 shape = RoundedCornerShape(10.dp)
             )
             .clickable {
+                //Переход на страницу с решения задачи с передачей аргументов задачи
                 controller.navigate(
                     "SolvedTask"
                             + "/${item.task_title}"
@@ -72,6 +74,7 @@ fun LeaderBoardElement(
                         .padding(horizontal = 10.dp)
                         .align(Alignment.CenterVertically)
                 ) {
+                    //Отображение занятого места только для пользователей
                     if (!CurrentUser.isAdmin) {
                         Text(
                             text = "$place место",
@@ -86,6 +89,7 @@ fun LeaderBoardElement(
                                 .background(color = CodeBlitzTheme.colors.background)
                         )
                     }
+                    //Разделители для отцентровки времени при входе от администратора
                     if (CurrentUser.isAdmin) {
                         Spacer(
                             modifier = Modifier.weight(1f)
@@ -96,12 +100,14 @@ fun LeaderBoardElement(
                         style = CodeBlitzTheme.typography.titleSmall,
                         color = CodeBlitzTheme.colors.primary
                     )
+                    //Разделители для отцентровки времени при входе от администратора
                     if (CurrentUser.isAdmin) {
                         Spacer(
                             modifier = Modifier.weight(1f)
                         )
                     }
                 }
+                //Особое обозначение решения для пользователя, его отправившего
                 if (isUser) {
                     Box(
                         modifier = Modifier
@@ -127,6 +133,7 @@ fun LeaderBoardElement(
                         }
                     }
                 } else {
+                    //Отображение имени остальных пользователей
                     Text(
                         text = username,
                         style = CodeBlitzTheme.typography.titleSmall,

@@ -22,6 +22,7 @@ import com.example.codeblitz.view.ui.theme.ButtonCodeBlitz
 import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 import com.example.codeblitz.view.ui.theme.TransparentIconButtonCodeBlitz
 
+//Всплывающее окно при завершении задания
 @Composable
 fun Popup(
     onCloseClick: () -> Unit = {},
@@ -56,6 +57,7 @@ fun Popup(
                         color = CodeBlitzTheme.colors.tertiary,
                         modifier = Modifier.weight(0.8f)
                     )
+                    //Кнопка закрытия всплывающего окна
                     TransparentIconButtonCodeBlitz(
                         onClick = { onCloseClick() },
                         modifier = Modifier
@@ -77,6 +79,7 @@ fun Popup(
                 Spacer(
                     modifier = Modifier.height(15.dp)
                 )
+                //Кнопка завершения задания
                 ButtonCodeBlitz(
                     text = "Закончить",
                     onClick = { onEndClick() },

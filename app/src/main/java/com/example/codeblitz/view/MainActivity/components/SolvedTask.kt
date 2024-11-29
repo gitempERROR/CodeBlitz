@@ -43,6 +43,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -149,6 +150,7 @@ fun SolvedTask(controller: NavController, viewModel: SolvedTaskViewModel = hiltV
             .height(animatedContainerHeight)
             .fillMaxWidth()
             .zIndex(4f)
+            .testTag("SolvedTask")
     ) {
         Box(
             modifier = Modifier

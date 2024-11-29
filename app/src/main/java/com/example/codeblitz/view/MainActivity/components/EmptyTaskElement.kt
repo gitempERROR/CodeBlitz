@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -25,9 +26,12 @@ import com.example.codeblitz.view.ui.theme.CodeBlitzTheme
 @Composable
 fun EmptyTaskElement(
     controller: NavController,
+    itemID: String = "0"
 ) {
     Spacer(
-        modifier = Modifier.height(20.dp)
+        modifier = Modifier
+            .height(20.dp)
+            .testTag("TaskElement")
     )
     Box(
         modifier = Modifier
@@ -45,6 +49,7 @@ fun EmptyTaskElement(
             .clickable {
                 controller.navigate(Routes.AddTask.route)
             }
+            .testTag("TaskElementID - $itemID")
     ) {
         Box(
             modifier = Modifier

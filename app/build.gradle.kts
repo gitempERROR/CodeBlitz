@@ -18,7 +18,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.codeblitz.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -51,10 +51,6 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-}
-
-configurations.all {
-    resolutionStrategy.force("commons-codec:commons-codec:1.9")
 }
 
 dependencies {
@@ -93,9 +89,20 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.52")
     kapt("com.google.dagger:hilt-android-compiler:2.52")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    // For instrumented tests.
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
+    // ...with Kotlin.
+    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.51.1")
     // Hilt
 
+    //Syntax Highlight
     implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
+    //Syntax Highlight
+
+    //Tests
+
+    //Test
 }
 
 kapt {

@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -61,6 +62,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
         modifier = Modifier
             .fillMaxSize()
             .background(color = CodeBlitzTheme.colors.background)
+            .testTag("Register")
     )
     {
         Column(
@@ -134,7 +136,7 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                         .toFloat() * ScreenDimensions.getScreenRatio().toFloat()
                                 )
                             )
-                        //Отступ вверху страницы при горизонтальном экране
+                            //Отступ вверху страницы при горизонтальном экране
                         } else {
                             Spacer(
                                 modifier = Modifier.height(30.dp)
@@ -157,7 +159,9 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                 modifier = Modifier
                                     .padding(horizontal = 15.dp)
                                     .fillMaxWidth(),
-                                internalModifier = Modifier.fillMaxWidth(),
+                                internalModifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("Login Register"),
                                 labelGap = 1.dp,
                                 label = "Логин",
                                 paddingValues = PaddingValues(12.dp),
@@ -176,7 +180,9 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                 modifier = Modifier
                                     .padding(horizontal = 15.dp)
                                     .fillMaxWidth(),
-                                internalModifier = Modifier.fillMaxWidth(),
+                                internalModifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("Password Register"),
                                 labelGap = 1.dp,
                                 label = "Пароль",
                                 paddingValues = PaddingValues(12.dp),
@@ -196,7 +202,9 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                 modifier = Modifier
                                     .padding(horizontal = 15.dp)
                                     .fillMaxWidth(),
-                                internalModifier = Modifier.fillMaxWidth(),
+                                internalModifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("Repeat Password"),
                                 labelGap = 1.dp,
                                 label = "Повторите пароль",
                                 paddingValues = PaddingValues(12.dp),
@@ -254,7 +262,8 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                         color = CodeBlitzTheme.colors.tertiary,
                                         modifier = Modifier
                                             .align(Alignment.Center)
-                                            .padding(horizontal = 12.dp, vertical = 12.dp),
+                                            .padding(horizontal = 12.dp, vertical = 12.dp)
+                                            .testTag("Wrong Email"),
                                         textAlign = TextAlign.Center,
                                         maxLines = 2
                                     )
@@ -280,7 +289,8 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                                         color = CodeBlitzTheme.colors.tertiary,
                                         modifier = Modifier
                                             .align(Alignment.Center)
-                                            .padding(horizontal = 12.dp, vertical = 12.dp),
+                                            .padding(horizontal = 12.dp, vertical = 12.dp)
+                                            .testTag("Weak Password"),
                                         textAlign = TextAlign.Center,
                                         maxLines = 2
                                     )
@@ -376,7 +386,8 @@ fun Register(controller: NavController, viewModel: RegisterViewModel = hiltViewM
                     .height(65.dp)
                     .align(Alignment.Center)
                     .zIndex(4f)
-                    .offset(y = 10.dp),
+                    .offset(y = 10.dp)
+                    .testTag("Register Button"),
                 text = "Регистрация",
                 //Кнопка регистрации доступна только при выполнении условий корректной почты и пароля
                 enabled = viewModel.isButtonEnabled,

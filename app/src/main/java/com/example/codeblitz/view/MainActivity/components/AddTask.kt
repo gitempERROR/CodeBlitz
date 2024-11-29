@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,6 +48,7 @@ fun AddTask(controller: NavController, viewModel: AddTaskViewModel = hiltViewMod
         modifier = Modifier
             .fillMaxSize()
             .background(color = CodeBlitzTheme.colors.onBackground)
+            .testTag("AddTask")
     ) {
         Box(
             modifier = Modifier

@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.codeblitz.R
@@ -32,6 +33,7 @@ fun Popup(
         modifier = Modifier
             .fillMaxSize()
             .zIndex(10f)
+            .testTag("Popup")
     ) {
         Box(
             modifier = Modifier

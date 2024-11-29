@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -66,6 +67,7 @@ fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) 
         modifier = Modifier
             .fillMaxSize()
             .background(color = CodeBlitzTheme.colors.onBackground)
+            .testTag("Main")
     ) {
         Box(
             modifier = Modifier
@@ -136,7 +138,8 @@ fun Main(controller: NavController, viewModel: MainViewModel = hiltViewModel()) 
                 //Генерация пустых блоков с кнопкой добавления
                 while (count < 2) {
                     EmptyTaskElement(
-                        controller = controller
+                        controller = controller,
+                        itemID = count.toString()
                     )
                     count += 1
                 }

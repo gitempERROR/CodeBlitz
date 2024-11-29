@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+//ViewModel для страницы регистрации
 @HiltViewModel
 class RegisterViewModel @Inject constructor() : BaseViewModel() {
     //Поле данных для регистрации
@@ -47,7 +48,7 @@ class RegisterViewModel @Inject constructor() : BaseViewModel() {
     val emailValid: Boolean get() = _emailValid.value
 
     //Проверка почты
-    private fun isValidEmail(email: String): Boolean {
+    fun isValidEmail(email: String): Boolean {
         return EMAIL_ADDRESS.matcher(email).matches()
     }
 

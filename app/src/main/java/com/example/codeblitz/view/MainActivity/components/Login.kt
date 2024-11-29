@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -60,6 +61,7 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
         modifier = Modifier
             .fillMaxSize()
             .background(color = CodeBlitzTheme.colors.background)
+            .testTag("Login")
     )
     {
         Column(
@@ -154,7 +156,9 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                                 modifier = Modifier
                                     .padding(horizontal = 15.dp)
                                     .fillMaxWidth(),
-                                internalModifier = Modifier.fillMaxWidth(),
+                                internalModifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("Login Login"),
                                 labelGap = 1.dp,
                                 label = "Логин",
                                 text = viewModel.loginData.login,
@@ -173,7 +177,9 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                                 modifier = Modifier
                                     .padding(horizontal = 15.dp)
                                     .fillMaxWidth(),
-                                internalModifier = Modifier.fillMaxWidth(),
+                                internalModifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("Password Login"),
                                 labelGap = 1.dp,
                                 label = "Пароль",
                                 text = viewModel.loginData.password,
@@ -193,7 +199,8 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                                 text = "Зарегистрироваться",
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 5.dp),
+                                    .padding(horizontal = 5.dp)
+                                    .testTag("To Register Button"),
                                 onClick = { viewModel.navigateToRegister() }
                             )
                             Spacer(
@@ -313,7 +320,8 @@ fun Login(controller: NavHostController, viewModel: LoginViewModel = hiltViewMod
                     .height(65.dp)
                     .align(Alignment.Center)
                     .zIndex(4f)
-                    .offset(y = 10.dp),
+                    .offset(y = 10.dp)
+                    .testTag("Login Button"),
                 text = "Вход",
                 onClick = { viewModel.login() },
                 //Кнопка доступна только если заполнены поля

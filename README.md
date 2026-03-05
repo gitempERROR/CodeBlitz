@@ -6,3 +6,8 @@
 ## В качестве бэкенда приложения использовалась Supabase, сейчас база там не поднята, поэтому проект не функционален
 
 **Дизайн приложения:**  [Макет приложения - Figma](https://www.figma.com/design/rTUUWG5ZbsedkDY6VORlQI/CodeBlitZ?node-id=0-1&t=mqi5uEEH3r0rophJ-1)
+
+**Примеры дизайна:**
+(Главное окно)[Main CodeBlitz.png]
+(Окно авторизации)[Login CodeBlitz.png]
+(Окно настроек)[Setting COdeBlitz.png]
